@@ -368,95 +368,177 @@ https://github.com/alex-shpak/hugo-book
   3.1 Normalization
   <a class="anchor" href="#31-normalization">#</a>
 </h4>
-<p>The code <code>Area_slide.py</code> allows you to normalize your number on the sample area.</p>
+<p>Before you can apply statistical analyses, it is necessary to normalize your data. The code <code>Area_slide.py</code> allows you to normalize the number of vessels on the tissue sample area. The function of this code is to segment the entire sample area through the L channel, also known as the luminance channel. </p>
 
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;">
-<code class="language-python">
-<span style="color:#f92672">import</span> cv2
-<span style="color:#f92672">import</span> numpy <span style="color:#66d9ef">as</span> np
-<span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#66d9ef">as</span> plt
-<span style="color:#f92672">import</span> os
-<span style="color:#f92672">import</span> glob
-<span style="color:#f92672">import</span> pandas <span style="color:#66d9ef">as</span> pd
-<span style="color:#f92672">from</span> tqdm <span style="color:#f92672">import</span> tqdm
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;"><code class="language-python">
+<span></span><span style="color: #ff4689">import</span> <span style="color: #f8f8f2">cv2</span>
+<span style="color: #ff4689">import</span> <span style="color: #f8f8f2">numpy</span> <span style="color: #66d9ef">as</span> <span style="color: #f8f8f2">np</span>
+<span style="color: #ff4689">import</span> <span style="color: #f8f8f2">matplotlib.pyplot</span> <span style="color: #66d9ef">as</span> <span style="color: #f8f8f2">plt</span>
+<span style="color: #ff4689">import</span> <span style="color: #f8f8f2">os</span>
+<span style="color: #ff4689">import</span> <span style="color: #f8f8f2">glob</span>
+<span style="color: #ff4689">import</span> <span style="color: #f8f8f2">pandas</span> <span style="color: #66d9ef">as</span> <span style="color: #f8f8f2">pd</span>
+<span style="color: #ff4689">from</span> <span style="color: #f8f8f2">tqdm</span> <span style="color: #ff4689">import</span> <span style="color: #f8f8f2">tqdm</span> 
 
-<span style="color:#66d9ef">def</span> calculate_tissue_area(image_path, save_visualizations<span style="color:#f92672">=</span><span style="color:#66d9ef">False</span>, output_folder<span style="color:#f92672">=</span><span style="color:#66d9ef">None</span>):
-    img <span style="color:#f92672">=</span> cv2.imread(image_path)
-    <span style="color:#66d9ef">if</span> img <span style="color:#f92672">is</span> <span style="color:#66d9ef">None</span>:
-        <span style="color:#66d9ef">print</span>(f<span style="color:#e6db74">"Error: Could not read image </span>{image_path}<span style="color:#e6db74">"</span>)
-        <span style="color:#66d9ef">return</span> 0, <span style="color:#66d9ef">None</span>, <span style="color:#66d9ef">None</span>
+<span style="color: #66d9ef">def</span> <span style="color: #a6e22e">calculate_tissue_area</span><span style="color: #f8f8f2">(image_path,</span> <span style="color: #f8f8f2">save_visualizations</span><span style="color: #ff4689">=</span><span style="color: #66d9ef">False</span><span style="color: #f8f8f2">,</span> <span style="color: #f8f8f2">output_folder</span><span style="color: #ff4689">=</span><span style="color: #66d9ef">None</span><span style="color: #f8f8f2">):</span>
+    <span style="color: #959077"># Read the image</span>
+    <span style="color: #f8f8f2">img</span> <span style="color: #ff4689">=</span> <span style="color: #f8f8f2">cv2</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">imread(image_path)</span>
+    <span style="color: #66d9ef">if</span> <span style="color: #f8f8f2">img</span> <span style="color: #ff4689">is</span> <span style="color: #66d9ef">None</span><span style="color: #f8f8f2">:</span>
+        <span style="color: #f8f8f2">print(</span><span style="color: #e6db74">f&quot;Error: Could not read image {</span><span style="color: #f8f8f2">image_path</span><span style="color: #e6db74">}&quot;</span><span style="color: #f8f8f2">)</span>
+        <span style="color: #66d9ef">return</span> <span style="color: #ae81ff">0</span><span style="color: #f8f8f2">,</span> <span style="color: #66d9ef">None</span><span style="color: #f8f8f2">,</span> <span style="color: #66d9ef">None</span>
+    
+    <span style="color: #959077"># Convert to RGB (OpenCV loads as BGR)</span>
+    <span style="color: #f8f8f2">img_rgb</span> <span style="color: #ff4689">=</span> <span style="color: #f8f8f2">cv2</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">cvtColor(img,</span> <span style="color: #f8f8f2">cv2</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">COLOR_BGR2RGB)</span>
+    
+    <span style="color: #959077"># Convert to LAB color space</span>
+    <span style="color: #f8f8f2">lab</span> <span style="color: #ff4689">=</span> <span style="color: #f8f8f2">cv2</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">cvtColor(img,</span> <span style="color: #f8f8f2">cv2</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">COLOR_BGR2LAB)</span>
+    
+    <span style="color: #959077"># Extract the L channel (luminance)</span>
+    <span style="color: #f8f8f2">l_channel</span> <span style="color: #ff4689">=</span> <span style="color: #f8f8f2">lab[:,:,</span><span style="color: #ae81ff">0</span><span style="color: #f8f8f2">]</span>
+    
+    <span style="color: #959077"># Apply threshold to separate tissue from background</span>
+    <span style="color: #f8f8f2">_,</span> <span style="color: #f8f8f2">binary</span> <span style="color: #ff4689">=</span> <span style="color: #f8f8f2">cv2</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">threshold(l_channel,</span> <span style="color: #ae81ff">220</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">255</span><span style="color: #f8f8f2">,</span> <span style="color: #f8f8f2">cv2</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">THRESH_BINARY_INV)</span>
+    
+    <span style="color: #959077"># Clean up the binary image</span>
+    <span style="color: #f8f8f2">kernel</span> <span style="color: #ff4689">=</span> <span style="color: #f8f8f2">np</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">ones((</span><span style="color: #ae81ff">5</span><span style="color: #f8f8f2">,</span><span style="color: #ae81ff">5</span><span style="color: #f8f8f2">),</span> <span style="color: #f8f8f2">np</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">uint8)</span>
+    <span style="color: #f8f8f2">binary</span> <span style="color: #ff4689">=</span> <span style="color: #f8f8f2">cv2</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">morphologyEx(binary,</span> <span style="color: #f8f8f2">cv2</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">MORPH_CLOSE,</span> <span style="color: #f8f8f2">kernel)</span>
+    <span style="color: #f8f8f2">binary</span> <span style="color: #ff4689">=</span> <span style="color: #f8f8f2">cv2</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">morphologyEx(binary,</span> <span style="color: #f8f8f2">cv2</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">MORPH_OPEN,</span> <span style="color: #f8f8f2">kernel)</span>
+    
+    <span style="color: #959077"># Find contours</span>
+    <span style="color: #f8f8f2">contours,</span> <span style="color: #f8f8f2">_</span> <span style="color: #ff4689">=</span> <span style="color: #f8f8f2">cv2</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">findContours(binary,</span> <span style="color: #f8f8f2">cv2</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">RETR_EXTERNAL,</span> <span style="color: #f8f8f2">cv2</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">CHAIN_APPROX_SIMPLE)</span>
+    
+    <span style="color: #959077"># Create a mask for the full tissue</span>
+    <span style="color: #f8f8f2">mask</span> <span style="color: #ff4689">=</span> <span style="color: #f8f8f2">np</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">zeros_like(l_channel)</span>
+    
+    <span style="color: #959077"># Draw all contours above a certain size (to avoid small artifacts)</span>
+    <span style="color: #f8f8f2">min_contour_area</span> <span style="color: #ff4689">=</span> <span style="color: #ae81ff">1000</span>  <span style="color: #959077"># Adjust based on your image size</span>
+    <span style="color: #66d9ef">for</span> <span style="color: #f8f8f2">contour</span> <span style="color: #ff4689">in</span> <span style="color: #f8f8f2">contours:</span>
+        <span style="color: #66d9ef">if</span> <span style="color: #f8f8f2">cv2</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">contourArea(contour)</span> <span style="color: #ff4689">&gt;</span> <span style="color: #f8f8f2">min_contour_area:</span>
+            <span style="color: #f8f8f2">cv2</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">drawContours(mask,</span> <span style="color: #f8f8f2">[contour],</span> <span style="color: #ae81ff">0</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">255</span><span style="color: #f8f8f2">,</span> <span style="color: #ff4689">-</span><span style="color: #ae81ff">1</span><span style="color: #f8f8f2">)</span>
+    
+    <span style="color: #959077"># Calculate area in pixels</span>
+    <span style="color: #f8f8f2">area_pixels</span> <span style="color: #ff4689">=</span> <span style="color: #f8f8f2">cv2</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">countNonZero(mask)</span>
+    
+    <span style="color: #959077"># Create visualization of the filled tissue</span>
+    <span style="color: #f8f8f2">filled_tissue</span> <span style="color: #ff4689">=</span> <span style="color: #f8f8f2">cv2</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">bitwise_and(img_rgb,</span> <span style="color: #f8f8f2">img_rgb,</span> <span style="color: #f8f8f2">mask</span><span style="color: #ff4689">=</span><span style="color: #f8f8f2">mask)</span>
+    
+    <span style="color: #66d9ef">if</span> <span style="color: #f8f8f2">save_visualizations:</span>
+        <span style="color: #66d9ef">if</span> <span style="color: #f8f8f2">output_folder</span> <span style="color: #ff4689">is</span> <span style="color: #66d9ef">None</span><span style="color: #f8f8f2">:</span>
+            <span style="color: #f8f8f2">output_folder</span> <span style="color: #ff4689">=</span> <span style="color: #f8f8f2">os</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">path</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">dirname(image_path)</span> <span style="color: #ff4689">or</span> <span style="color: #e6db74">&#39;.&#39;</span>
+        
+        <span style="color: #959077"># Create visualization</span>
+        <span style="color: #f8f8f2">plt</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">figure(figsize</span><span style="color: #ff4689">=</span><span style="color: #f8f8f2">(</span><span style="color: #ae81ff">15</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">10</span><span style="color: #f8f8f2">))</span>
+        
+        <span style="color: #f8f8f2">plt</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">subplot(</span><span style="color: #ae81ff">2</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">2</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">1</span><span style="color: #f8f8f2">)</span>
+        <span style="color: #f8f8f2">plt</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">imshow(img_rgb)</span>
+        <span style="color: #f8f8f2">plt</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">title(</span><span style="color: #e6db74">&#39;Original Image&#39;</span><span style="color: #f8f8f2">)</span>
+        <span style="color: #f8f8f2">plt</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">axis(</span><span style="color: #e6db74">&#39;off&#39;</span><span style="color: #f8f8f2">)</span>
+        
+        <span style="color: #f8f8f2">plt</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">subplot(</span><span style="color: #ae81ff">2</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">2</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">2</span><span style="color: #f8f8f2">)</span>
+        <span style="color: #f8f8f2">plt</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">imshow(binary,</span> <span style="color: #f8f8f2">cmap</span><span style="color: #ff4689">=</span><span style="color: #e6db74">&#39;gray&#39;</span><span style="color: #f8f8f2">)</span>
+        <span style="color: #f8f8f2">plt</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">title(</span><span style="color: #e6db74">&#39;Thresholded Image&#39;</span><span style="color: #f8f8f2">)</span>
+        <span style="color: #f8f8f2">plt</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">axis(</span><span style="color: #e6db74">&#39;off&#39;</span><span style="color: #f8f8f2">)</span>
+        
+        <span style="color: #f8f8f2">plt</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">subplot(</span><span style="color: #ae81ff">2</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">2</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">3</span><span style="color: #f8f8f2">)</span>
+        <span style="color: #f8f8f2">plt</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">imshow(mask,</span> <span style="color: #f8f8f2">cmap</span><span style="color: #ff4689">=</span><span style="color: #e6db74">&#39;gray&#39;</span><span style="color: #f8f8f2">)</span>
+        <span style="color: #f8f8f2">plt</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">title(</span><span style="color: #e6db74">&#39;Tissue Mask&#39;</span><span style="color: #f8f8f2">)</span>
+        <span style="color: #f8f8f2">plt</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">axis(</span><span style="color: #e6db74">&#39;off&#39;</span><span style="color: #f8f8f2">)</span>
+        
+        <span style="color: #f8f8f2">plt</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">subplot(</span><span style="color: #ae81ff">2</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">2</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">4</span><span style="color: #f8f8f2">)</span>
+        <span style="color: #f8f8f2">plt</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">imshow(filled_tissue)</span>
+        <span style="color: #f8f8f2">plt</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">title(</span><span style="color: #e6db74">f&#39;Filled Tissue (Area: {</span><span style="color: #f8f8f2">area_pixels</span><span style="color: #e6db74">} pixels)&#39;</span><span style="color: #f8f8f2">)</span>
+        <span style="color: #f8f8f2">plt</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">axis(</span><span style="color: #e6db74">&#39;off&#39;</span><span style="color: #f8f8f2">)</span>
+        
+        <span style="color: #f8f8f2">plt</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">tight_layout()</span>
+        
+        <span style="color: #959077"># Get filename without extension</span>
+        <span style="color: #f8f8f2">base_name</span> <span style="color: #ff4689">=</span> <span style="color: #f8f8f2">os</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">path</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">splitext(os</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">path</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">basename(image_path))[</span><span style="color: #ae81ff">0</span><span style="color: #f8f8f2">]</span>
+        <span style="color: #f8f8f2">plt</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">savefig(</span><span style="color: #e6db74">f&quot;{</span><span style="color: #f8f8f2">output_folder</span><span style="color: #e6db74">}/{</span><span style="color: #f8f8f2">base_name</span><span style="color: #e6db74">}_analysis.png&quot;</span><span style="color: #f8f8f2">,</span> <span style="color: #f8f8f2">dpi</span><span style="color: #ff4689">=</span><span style="color: #ae81ff">300</span><span style="color: #f8f8f2">)</span>
+        <span style="color: #f8f8f2">plt</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">close()</span>
+    
+    <span style="color: #66d9ef">return</span> <span style="color: #f8f8f2">area_pixels,</span> <span style="color: #f8f8f2">mask,</span> <span style="color: #f8f8f2">filled_tissue</span>
 
-    img_rgb <span style="color:#f92672">=</span> cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    lab <span style="color:#f92672">=</span> cv2.cvtColor(img, cv2.COLOR_BGR2LAB)
-    l_channel <span style="color:#f92672">=</span> lab[:,:,<span style="color:#ae81ff">0</span>]
-    _, binary <span style="color:#f92672">=</span> cv2.threshold(l_channel, <span style="color:#ae81ff">220</span>, <span style="color:#ae81ff">255</span>, cv2.THRESH_BINARY_INV)
+<span style="color: #66d9ef">def</span> <span style="color: #a6e22e">process_folder</span><span style="color: #f8f8f2">(input_folder,</span> <span style="color: #f8f8f2">output_folder,</span> <span style="color: #f8f8f2">file_extensions</span><span style="color: #ff4689">=</span><span style="color: #66d9ef">None</span><span style="color: #f8f8f2">):</span>
+    <span style="color: #66d9ef">if</span> <span style="color: #f8f8f2">file_extensions</span> <span style="color: #ff4689">is</span> <span style="color: #66d9ef">None</span><span style="color: #f8f8f2">:</span>
+        <span style="color: #f8f8f2">file_extensions</span> <span style="color: #ff4689">=</span> <span style="color: #f8f8f2">[</span><span style="color: #e6db74">&#39;.jpg&#39;</span><span style="color: #f8f8f2">,</span> <span style="color: #e6db74">&#39;.jpeg&#39;</span><span style="color: #f8f8f2">,</span> <span style="color: #e6db74">&#39;.png&#39;</span><span style="color: #f8f8f2">,</span> <span style="color: #e6db74">&#39;.tif&#39;</span><span style="color: #f8f8f2">,</span> <span style="color: #e6db74">&#39;.tiff&#39;</span><span style="color: #f8f8f2">]</span>
+    
+    <span style="color: #959077"># Create output folder if it doesn&#39;t exist</span>
+    <span style="color: #f8f8f2">os</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">makedirs(output_folder,</span> <span style="color: #f8f8f2">exist_ok</span><span style="color: #ff4689">=</span><span style="color: #66d9ef">True</span><span style="color: #f8f8f2">)</span>
+    
+    <span style="color: #959077"># Get all image files in the input folder</span>
+    <span style="color: #f8f8f2">image_files</span> <span style="color: #ff4689">=</span> <span style="color: #f8f8f2">[]</span>
+    <span style="color: #66d9ef">for</span> <span style="color: #f8f8f2">ext</span> <span style="color: #ff4689">in</span> <span style="color: #f8f8f2">file_extensions:</span>
+        <span style="color: #f8f8f2">image_files</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">extend(glob</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">glob(os</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">path</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">join(input_folder,</span> <span style="color: #e6db74">f&#39;*{</span><span style="color: #f8f8f2">ext</span><span style="color: #e6db74">}&#39;</span><span style="color: #f8f8f2">)))</span>
+        <span style="color: #f8f8f2">image_files</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">extend(glob</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">glob(os</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">path</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">join(input_folder,</span> <span style="color: #e6db74">f&#39;*{</span><span style="color: #f8f8f2">ext</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">upper()</span><span style="color: #e6db74">}&#39;</span><span style="color: #f8f8f2">)))</span>
+    
+    <span style="color: #66d9ef">if</span> <span style="color: #ff4689">not</span> <span style="color: #f8f8f2">image_files:</span>
+        <span style="color: #f8f8f2">print(</span><span style="color: #e6db74">f&quot;No image files found in {</span><span style="color: #f8f8f2">input_folder</span><span style="color: #e6db74">} with extensions {</span><span style="color: #f8f8f2">file_extensions</span><span style="color: #e6db74">}&quot;</span><span style="color: #f8f8f2">)</span>
+        <span style="color: #66d9ef">return</span> <span style="color: #66d9ef">None</span>
+    
+    <span style="color: #f8f8f2">print(</span><span style="color: #e6db74">f&quot;Found {</span><span style="color: #f8f8f2">len(image_files)</span><span style="color: #e6db74">} image files to process&quot;</span><span style="color: #f8f8f2">)</span>
+    
+    <span style="color: #959077"># Process each image and collect results</span>
+    <span style="color: #f8f8f2">results</span> <span style="color: #ff4689">=</span> <span style="color: #f8f8f2">[]</span>
+    
+    <span style="color: #66d9ef">for</span> <span style="color: #f8f8f2">img_path</span> <span style="color: #ff4689">in</span> <span style="color: #f8f8f2">tqdm(image_files,</span> <span style="color: #f8f8f2">desc</span><span style="color: #ff4689">=</span><span style="color: #e6db74">&quot;Processing slides&quot;</span><span style="color: #f8f8f2">):</span>
+        <span style="color: #66d9ef">try</span><span style="color: #f8f8f2">:</span>
+            <span style="color: #959077"># Get filename without path</span>
+            <span style="color: #f8f8f2">filename</span> <span style="color: #ff4689">=</span> <span style="color: #f8f8f2">os</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">path</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">basename(img_path)</span>
+            
+            <span style="color: #959077"># Calculate area</span>
+            <span style="color: #f8f8f2">area,</span> <span style="color: #f8f8f2">mask,</span> <span style="color: #f8f8f2">filled_tissue</span> <span style="color: #ff4689">=</span> <span style="color: #f8f8f2">calculate_tissue_area(img_path)</span>
+            
+            <span style="color: #959077"># Save the original image</span>
+            <span style="color: #f8f8f2">img</span> <span style="color: #ff4689">=</span> <span style="color: #f8f8f2">cv2</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">imread(img_path)</span>
+            <span style="color: #f8f8f2">base_name</span> <span style="color: #ff4689">=</span> <span style="color: #f8f8f2">os</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">path</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">splitext(filename)[</span><span style="color: #ae81ff">0</span><span style="color: #f8f8f2">]</span>
+            <span style="color: #f8f8f2">cv2</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">imwrite(</span><span style="color: #e6db74">f&quot;{</span><span style="color: #f8f8f2">output_folder</span><span style="color: #e6db74">}/{</span><span style="color: #f8f8f2">base_name</span><span style="color: #e6db74">}_original.png&quot;</span><span style="color: #f8f8f2">,</span> <span style="color: #f8f8f2">img)</span>
+            
+            <span style="color: #959077"># Save the mask</span>
+            <span style="color: #66d9ef">if</span> <span style="color: #f8f8f2">mask</span> <span style="color: #ff4689">is</span> <span style="color: #ff4689">not</span> <span style="color: #66d9ef">None</span><span style="color: #f8f8f2">:</span>
+                <span style="color: #f8f8f2">cv2</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">imwrite(</span><span style="color: #e6db74">f&quot;{</span><span style="color: #f8f8f2">output_folder</span><span style="color: #e6db74">}/{</span><span style="color: #f8f8f2">base_name</span><span style="color: #e6db74">}_mask.png&quot;</span><span style="color: #f8f8f2">,</span> <span style="color: #f8f8f2">mask)</span>
+            
+            <span style="color: #959077"># Store the results</span>
+            <span style="color: #f8f8f2">results</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">append({</span>
+                <span style="color: #e6db74">&#39;Image&#39;</span><span style="color: #f8f8f2">:</span> <span style="color: #f8f8f2">filename,</span>
+                <span style="color: #e6db74">&#39;Tissue Area (pixels)&#39;</span><span style="color: #f8f8f2">:</span> <span style="color: #f8f8f2">area</span>
+            <span style="color: #f8f8f2">})</span>
+            
+        <span style="color: #66d9ef">except</span> <span style="color: #a6e22e">Exception</span> <span style="color: #66d9ef">as</span> <span style="color: #f8f8f2">e:</span>
+            <span style="color: #f8f8f2">print(</span><span style="color: #e6db74">f&quot;Error processing {</span><span style="color: #f8f8f2">img_path</span><span style="color: #e6db74">}: {</span><span style="color: #f8f8f2">e</span><span style="color: #e6db74">}&quot;</span><span style="color: #f8f8f2">)</span>
+    
+    <span style="color: #959077"># Create a DataFrame and save to CSV</span>
+    <span style="color: #66d9ef">if</span> <span style="color: #f8f8f2">results:</span>
+        <span style="color: #f8f8f2">df</span> <span style="color: #ff4689">=</span> <span style="color: #f8f8f2">pd</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">DataFrame(results)</span>
+        <span style="color: #f8f8f2">csv_path</span> <span style="color: #ff4689">=</span> <span style="color: #f8f8f2">os</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">path</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">join(output_folder,</span> <span style="color: #e6db74">&quot;tissue_areas.csv&quot;</span><span style="color: #f8f8f2">)</span>
+        <span style="color: #f8f8f2">df</span><span style="color: #ff4689">.</span><span style="color: #f8f8f2">to_csv(csv_path,</span> <span style="color: #f8f8f2">index</span><span style="color: #ff4689">=</span><span style="color: #66d9ef">False</span><span style="color: #f8f8f2">)</span>
+        <span style="color: #f8f8f2">print(</span><span style="color: #e6db74">f&quot;Results saved to {</span><span style="color: #f8f8f2">csv_path</span><span style="color: #e6db74">}&quot;</span><span style="color: #f8f8f2">)</span>
+        <span style="color: #66d9ef">return</span> <span style="color: #f8f8f2">df</span>
+    <span style="color: #66d9ef">else</span><span style="color: #f8f8f2">:</span>
+        <span style="color: #f8f8f2">print(</span><span style="color: #e6db74">&quot;No results were generated&quot;</span><span style="color: #f8f8f2">)</span>
+        <span style="color: #66d9ef">return</span> <span style="color: #66d9ef">None</span>
 
-    kernel <span style="color:#f92672">=</span> np.ones((<span style="color:#ae81ff">5</span>,<span style="color:#ae81ff">5</span>), np.uint8)
-    binary <span style="color:#f92672">=</span> cv2.morphologyEx(binary, cv2.MORPH_CLOSE, kernel)
-    binary <span style="color:#f92672">=</span> cv2.morphologyEx(binary, cv2.MORPH_OPEN, kernel)
+<span style="color: #959077"># Example usage</span>
+<span style="color: #66d9ef">if</span> <span style="color: #f8f8f2">__name__</span> <span style="color: #ff4689">==</span> <span style="color: #e6db74">&quot;__main__&quot;</span><span style="color: #f8f8f2">:</span>
 
-    contours, _ <span style="color:#f92672">=</span> cv2.findContours(binary, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    mask <span style="color:#f92672">=</span> np.zeros_like(l_channel)
-    min_contour_area <span style="color:#f92672">=</span> <span style="color:#ae81ff">1000</span>
-    <span style="color:#66d9ef">for</span> contour <span style="color:#f92672">in</span> contours:
-        <span style="color:#66d9ef">if</span> cv2.contourArea(contour) <span style="color:#f92672">&gt;</span> min_contour_area:
-            cv2.drawContours(mask, [contour], <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">255</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)
-
-    area_pixels <span style="color:#f92672">=</span> cv2.countNonZero(mask)
-    filled_tissue <span style="color:#f92672">=</span> cv2.bitwise_and(img_rgb, img_rgb, mask<span style="color:#f92672">=</span>mask)
-
-    <span style="color:#66d9ef">if</span> save_visualizations:
-        <span style="color:#66d9ef">if</span> output_folder <span style="color:#f92672">is</span> <span style="color:#66d9ef">None</span>:
-            output_folder <span style="color:#f92672">=</span> os.path.dirname(image_path) <span style="color:#f92672">or</span> <span style="color:#e6db74">'.'</span>
-
-        plt.figure(figsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">15</span>, <span style="color:#ae81ff">10</span>))
-        plt.subplot(<span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">1</span>)
-        plt.imshow(img_rgb)
-        plt.title(<span style="color:#e6db74">'Original Image'</span>)
-        plt.axis(<span style="color:#e6db74">'off'</span>)
-
-        plt.subplot(<span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">2</span>)
-        plt.imshow(binary, cmap<span style="color:#f92672">=</span><span style="color:#e6db74">'gray'</span>)
-        plt.title(<span style="color:#e6db74">'Thresholded'</span>)
-        plt.axis(<span style="color:#e6db74">'off'</span>)
-
-        plt.subplot(<span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>)
-        plt.imshow(mask, cmap<span style="color:#f92672">=</span><span style="color:#e6db74">'gray'</span>)
-        plt.title(<span style="color:#e6db74">'Tissue Mask'</span>)
-        plt.axis(<span style="color:#e6db74">'off'</span>)
-
-        plt.subplot(<span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">4</span>)
-        plt.imshow(filled_tissue)
-        plt.title(f<span style="color:#e6db74">'Filled Tissue (Area: </span>{area_pixels}<span style="color:#e6db74"> px)'</span>)
-        plt.axis(<span style="color:#e6db74">'off'</span>)
-
-        plt.tight_layout()
-        base_name <span style="color:#f92672">=</span> os.path.splitext(os.path.basename(image_path))[<span style="color:#ae81ff">0</span>]
-        plt.savefig(f<span style="color:#e6db74">"{output_folder}/{base_name}_analysis.png"</span>, dpi<span style="color:#f92672">=</span><span style="color:#ae81ff">300</span>)
-        plt.close()
-
-    <span style="color:#66d9ef">return</span> area_pixels, mask, filled_tissue
-
-<span style="color:#66d9ef">def</span> process_folder(input_folder, output_folder, file_extensions<span style="color:#f92672">=</span><span style="color:#66d9ef">None</span>):
-    <span style="color:#66d9ef">if</span> file_extensions <span style="color:#f92672">is</span> <span style="color:#66d9ef">None</span>:
-        file_extensions <span style="color:#f92672">=</span> [<span style="color:#e6db74">'.jpg'</span>, <span style="color:#e6db74">'.jpeg'</span>, <span style="color:#e6db74">'.png'</span>, <span style="color:#e6db74">'.tif'</span>, <span style="color:#e6db74">'.tiff'</span>]
-
-    results <span style="color:#f92672">=</span> []
-    image_files <span style="color:#f92672">=</span> []
-
-    <span style="color:#66d9ef">for</span> ext <span style="color:#f92672">in</span> file_extensions:
-        image_files.extend(glob.glob(os.path.join(input_folder, f<span style="color:#e6db74">'*{ext}'</span>)))
-
-    <span style="color:#66d9ef">for</span> image_path <span style="color:#f92672">in</span> tqdm(image_files, desc<span style="color:#f92672">=</span><span style="color:#e6db74">"Processing images"</span>):
-        area, _, _ <span style="color:#f92672">=</span> calculate_tissue_area(image_path, save_visualizations<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>, output_folder<span style="color:#f92672">=</span>output_folder)
-        results.append({<span style="color:#e6db74">'image'</span>: os.path.basename(image_path), <span style="color:#e6db74">'area_pixels'</span>: area})
-
-    df <span style="color:#f92672">=</span> pd.DataFrame(results)
-    df.to_csv(os.path.join(output_folder, <span style="color:#e6db74">'tissue_area_summary.csv'</span>), index<span style="color:#f92672">=</span><span style="color:#66d9ef">False</span>)
+    <span style="color: #959077"># Process the arguments</span>
+    <span style="color: #f8f8f2">input_folder</span> <span style="color: #ff4689">=</span> <span style="color: #e6db74">&#39;Input&#39;</span>
+    <span style="color: #f8f8f2">output_folder</span> <span style="color: #ff4689">=</span> <span style="color: #e6db74">&#39;Output&#39;</span>
+    
+    <span style="color: #959077"># Run the analysis</span>
+    <span style="color: #f8f8f2">print(</span><span style="color: #e6db74">f&quot;Processing slides from {</span><span style="color: #f8f8f2">input_folder</span><span style="color: #e6db74">}&quot;</span><span style="color: #f8f8f2">)</span>
+    <span style="color: #f8f8f2">print(</span><span style="color: #e6db74">f&quot;Results will be saved to {</span><span style="color: #f8f8f2">output_folder</span><span style="color: #e6db74">}&quot;</span><span style="color: #f8f8f2">)</span>
+    
+    <span style="color: #f8f8f2">df</span> <span style="color: #ff4689">=</span> <span style="color: #f8f8f2">process_folder(input_folder,</span> <span style="color: #f8f8f2">output_folder)</span>
+    
+    <span style="color: #66d9ef">if</span> <span style="color: #f8f8f2">df</span> <span style="color: #ff4689">is</span> <span style="color: #ff4689">not</span> <span style="color: #66d9ef">None</span><span style="color: #f8f8f2">:</span>
+        <span style="color: #f8f8f2">print(</span><span style="color: #e6db74">&quot;Processing complete!&quot;</span><span style="color: #f8f8f2">)</span>
+        <span style="color: #f8f8f2">print(</span><span style="color: #e6db74">f&quot;CSV file with area measurements saved to {</span><span style="color: #f8f8f2">output_folder</span><span style="color: #e6db74">}/tissue_areas.csv&quot;</span><span style="color: #f8f8f2">)</span>
+    <span style="color: #66d9ef">else</span><span style="color: #f8f8f2">:</span>
+        <span style="color: #f8f8f2">print(</span><span style="color: #e6db74">&quot;No results were generated.&quot;</span><span style="color: #f8f8f2">)</span>
 </code></pre></div>
 
 
 
+	  
 <h3 id="4-infer-drug-distributions">
   4. <strong>Infer Drug Distributions</strong>
   <a class="anchor" href="#4-infer-drug-distributions">#</a>
