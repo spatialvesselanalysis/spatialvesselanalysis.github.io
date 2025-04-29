@@ -418,16 +418,12 @@ https://github.com/alex-shpak/hugo-book
   <a class="anchor" href="#32-creating-simulated-maldi-images">#</a>
 </h4>
 <p>Next, we generate simulated MALDI intensity maps based on any predefined function you like, such as an exponential decay model:</p>
-<p style="text-align: center;">
-\[
-I(x) = \eta^2 e^{-\frac{d(x)^2}{2\rho^2}}
-\]
-</p>
+<p><strong>I(x) = η² · e<sup>−d(x)²⁄(2ρ²)</sup></strong></p>
 <p>You can manually define the following parameters:</p>
 <ul>
-<li>\(d(x)\), the Euclidean distance from vessels,</li>
-<li>\(\eta^2\), the signal variance,</li>
-<li>\(\rho\), the characteristic length scale controlling spatial correlation.</li>
+<li><code>d(x)</code> the Euclidean distance from vessels</li>
+<li><code>η²</code> the signal variance</li>
+<li><code>ρ</code> the characteristic length scale controlling spatial correlation</li>
 </ul>
 <p>First, compute Euclidean distance matrices for each image in parallel.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#75715e">#r</span>
