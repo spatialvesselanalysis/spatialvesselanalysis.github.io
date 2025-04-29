@@ -309,7 +309,7 @@ https://github.com/alex-shpak/hugo-book
 </span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>imsave(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{</span>directory_to_save<span style="color:#e6db74">}{</span>folder<span style="color:#e6db74">}</span><span style="color:#e6db74">_Segmented.png&#34;</span>, opening, cmap<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;gray&#34;</span>)
 </span></span></code></pre></div>
 <div style="text-align: center; margin-top: 20px; margin-bottom: 20px;">
-  <img src="/images/Segmented.png" alt="Segmented vessels" width="600">
+  <img src="/images/Segmented.png" alt="Segmented vessels" width="400">
   <p style="font-style: italic; font-size: 0.9em;">Example output: a binary image, created using a mask, where all vessels are represented in white and the background is shown in black.</p>
 </div>
 <!-- raw HTML omitted -->
@@ -323,7 +323,7 @@ https://github.com/alex-shpak/hugo-book
 </span></span><span style="display:flex;"><span> cv2<span style="color:#f92672">.</span>imwrite(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{</span>directory_to_save<span style="color:#e6db74">}{</span>folder<span style="color:#e6db74">}</span><span style="color:#e6db74">_Vessels.jpg&#34;</span>, original)
 </span></span></code></pre></div>
 <div style="text-align: center;">
-  <img src="/images/Contoured.jpg" alt="Vessels with contours" width="600">
+  <img src="/images/Contoured.jpg" alt="Vessels with contours" width="400">
   <p style="font-style: italic; font-size: 0.9em;">Example output: the original histological image, with vessel contours highlighted in green.</p>
 </div>
 <!-- raw HTML omitted -->
@@ -362,7 +362,7 @@ https://github.com/alex-shpak/hugo-book
 <ul>
 <li>
 <h4 id="31-generating-synthetic-vessel-images">
-  3.1 Generating synthetic vessel images**
+  3.1 Generating synthetic vessel images
   <a class="anchor" href="#31-generating-synthetic-vessel-images">#</a>
 </h4>
 <p>To begin, execute the <code>Final_optimized_4_Windows.R</code> you may find in this repository. Note that this code only works on windows operating systems.</p>
@@ -418,12 +418,16 @@ https://github.com/alex-shpak/hugo-book
   <a class="anchor" href="#32-creating-simulated-maldi-images">#</a>
 </h4>
 <p>Next, we generate simulated MALDI intensity maps based on any predefined function you like, such as an exponential decay model:</p>
-<pre tabindex="0"><code class="language-math" data-lang="math">I(x) = \eta^2 e^{- \frac{d(x)^2}{2\rho^2}}
-</code></pre><p>where we manually define the parameters:</p>
+<p style="text-align: center;">
+\[
+I(x) = \eta^2 e^{-\frac{d(x)^2}{2\rho^2}}
+\]
+</p>
+<p>You can manually define the following parameters:</p>
 <ul>
-<li>$d(x)$, the Euclidean distance from vessels,</li>
-<li>$\eta^2$, the signal variance,</li>
-<li>$\rho$, the characteristic length scale controlling spatial correlation.</li>
+<li>\(d(x)\), the Euclidean distance from vessels,</li>
+<li>\(\eta^2\), the signal variance,</li>
+<li>\(\rho\), the characteristic length scale controlling spatial correlation.</li>
 </ul>
 <p>First, compute Euclidean distance matrices for each image in parallel.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#75715e">#r</span>
