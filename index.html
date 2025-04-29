@@ -369,106 +369,92 @@ https://github.com/alex-shpak/hugo-book
   <a class="anchor" href="#31-normalization">#</a>
 </h4>
 <p>The code <code>Area_slide.py</code> allows you to normalize your number on the sample area.</p>
-<div class="highlight"><pre><code class="language-python">
-import cv2
-import numpy as np
-import matplotlib.pyplot as plt
-import os
-import glob
-import pandas as pd
-from tqdm import tqdm 
 
-def calculate_tissue_area(image_path, save_visualizations=False, output_folder=None):
-    # Read the image
-    img = cv2.imread(image_path)
-    if img is None:
-        print(f"Error: Could not read image {image_path}")
-        return 0, None, None
-    
-    # Convert to RGB (OpenCV loads as BGR)
-    img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    
-    # Convert to LAB color space
-    lab = cv2.cvtColor(img, cv2.COLOR_BGR2LAB)
-    
-    # Extract the L channel (luminance)
-    l_channel = lab[:,:,0]
-    
-    # Apply threshold to separate tissue from background
-    _, binary = cv2.threshold(l_channel, 220, 255, cv2.THRESH_BINARY_INV)
-    
-    # Clean up the binary image
-    kernel = np.ones((5,5), np.uint8)
-    binary = cv2.morphologyEx(binary, cv2.MORPH_CLOSE, kernel)
-    binary = cv2.morphologyEx(binary, cv2.MORPH_OPEN, kernel)
-    
-    # Find contours
-    contours, _ = cv2.findContours(binary, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    
-    # Create a mask for the full tissue
-    mask = np.zeros_like(l_channel)
-    
-    # Draw all contours above a certain size (to avoid small artifacts)
-    min_contour_area = 1000
-    for contour in contours:
-        if cv2.contourArea(contour) > min_contour_area:
-            cv2.drawContours(mask, [contour], 0, 255, -1)
-    
-    # Calculate area in pixels
-    area_pixels = cv2.countNonZero(mask)
-    
-    # Create visualization of the filled tissue
-    filled_tissue = cv2.bitwise_and(img_rgb, img_rgb, mask=mask)
-    
-    if save_visualizations:
-        if output_folder is None:
-            output_folder = os.path.dirname(image_path) or '.'
-        
-        plt.figure(figsize=(15, 10))
-        plt.subplot(2, 2, 1)
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;">
+<code class="language-python">
+<span style="color:#f92672">import</span> cv2
+<span style="color:#f92672">import</span> numpy <span style="color:#66d9ef">as</span> np
+<span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#66d9ef">as</span> plt
+<span style="color:#f92672">import</span> os
+<span style="color:#f92672">import</span> glob
+<span style="color:#f92672">import</span> pandas <span style="color:#66d9ef">as</span> pd
+<span style="color:#f92672">from</span> tqdm <span style="color:#f92672">import</span> tqdm
+
+<span style="color:#66d9ef">def</span> calculate_tissue_area(image_path, save_visualizations<span style="color:#f92672">=</span><span style="color:#66d9ef">False</span>, output_folder<span style="color:#f92672">=</span><span style="color:#66d9ef">None</span>):
+    img <span style="color:#f92672">=</span> cv2.imread(image_path)
+    <span style="color:#66d9ef">if</span> img <span style="color:#f92672">is</span> <span style="color:#66d9ef">None</span>:
+        <span style="color:#66d9ef">print</span>(f<span style="color:#e6db74">"Error: Could not read image </span>{image_path}<span style="color:#e6db74">"</span>)
+        <span style="color:#66d9ef">return</span> 0, <span style="color:#66d9ef">None</span>, <span style="color:#66d9ef">None</span>
+
+    img_rgb <span style="color:#f92672">=</span> cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    lab <span style="color:#f92672">=</span> cv2.cvtColor(img, cv2.COLOR_BGR2LAB)
+    l_channel <span style="color:#f92672">=</span> lab[:,:,<span style="color:#ae81ff">0</span>]
+    _, binary <span style="color:#f92672">=</span> cv2.threshold(l_channel, <span style="color:#ae81ff">220</span>, <span style="color:#ae81ff">255</span>, cv2.THRESH_BINARY_INV)
+
+    kernel <span style="color:#f92672">=</span> np.ones((<span style="color:#ae81ff">5</span>,<span style="color:#ae81ff">5</span>), np.uint8)
+    binary <span style="color:#f92672">=</span> cv2.morphologyEx(binary, cv2.MORPH_CLOSE, kernel)
+    binary <span style="color:#f92672">=</span> cv2.morphologyEx(binary, cv2.MORPH_OPEN, kernel)
+
+    contours, _ <span style="color:#f92672">=</span> cv2.findContours(binary, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    mask <span style="color:#f92672">=</span> np.zeros_like(l_channel)
+    min_contour_area <span style="color:#f92672">=</span> <span style="color:#ae81ff">1000</span>
+    <span style="color:#66d9ef">for</span> contour <span style="color:#f92672">in</span> contours:
+        <span style="color:#66d9ef">if</span> cv2.contourArea(contour) <span style="color:#f92672">&gt;</span> min_contour_area:
+            cv2.drawContours(mask, [contour], <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">255</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)
+
+    area_pixels <span style="color:#f92672">=</span> cv2.countNonZero(mask)
+    filled_tissue <span style="color:#f92672">=</span> cv2.bitwise_and(img_rgb, img_rgb, mask<span style="color:#f92672">=</span>mask)
+
+    <span style="color:#66d9ef">if</span> save_visualizations:
+        <span style="color:#66d9ef">if</span> output_folder <span style="color:#f92672">is</span> <span style="color:#66d9ef">None</span>:
+            output_folder <span style="color:#f92672">=</span> os.path.dirname(image_path) <span style="color:#f92672">or</span> <span style="color:#e6db74">'.'</span>
+
+        plt.figure(figsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">15</span>, <span style="color:#ae81ff">10</span>))
+        plt.subplot(<span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">1</span>)
         plt.imshow(img_rgb)
-        plt.title('Original Image')
-        plt.axis('off')
-        
-        plt.subplot(2, 2, 2)
-        plt.imshow(binary, cmap='gray')
-        plt.title('Thresholded Image')
-        plt.axis('off')
-        
-        plt.subplot(2, 2, 3)
-        plt.imshow(mask, cmap='gray')
-        plt.title('Tissue Mask')
-        plt.axis('off')
-        
-        plt.subplot(2, 2, 4)
-        plt.imshow(filled_tissue)
-        plt.title(f'Filled Tissue (Area: {area_pixels} pixels)')
-        plt.axis('off')
-        
-        plt.tight_layout()
-        base_name = os.path.splitext(os.path.basename(image_path))[0]
-        plt.savefig(f"{output_folder}/{base_name}_analysis.png", dpi=300)
-        plt.close()
-    
-    return area_pixels, mask, filled_tissue
+        plt.title(<span style="color:#e6db74">'Original Image'</span>)
+        plt.axis(<span style="color:#e6db74">'off'</span>)
 
-def process_folder(input_folder, output_folder, file_extensions=None):
-    if file_extensions is None:
-        file_extensions = ['.jpg', '.jpeg', '.png', '.tif', '.tiff']
-    
-    results = []
-    image_files = []
-    
-    for ext in file_extensions:
-        image_files.extend(glob.glob(os.path.join(input_folder, f'*{ext}')))
-    
-    for image_path in tqdm(image_files, desc="Processing images"):
-        area, _, _ = calculate_tissue_area(image_path, save_visualizations=True, output_folder=output_folder)
-        results.append({'image': os.path.basename(image_path), 'area_pixels': area})
-    
-    df = pd.DataFrame(results)
-    df.to_csv(os.path.join(output_folder, 'tissue_area_summary.csv'), index=False)
+        plt.subplot(<span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">2</span>)
+        plt.imshow(binary, cmap<span style="color:#f92672">=</span><span style="color:#e6db74">'gray'</span>)
+        plt.title(<span style="color:#e6db74">'Thresholded'</span>)
+        plt.axis(<span style="color:#e6db74">'off'</span>)
+
+        plt.subplot(<span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>)
+        plt.imshow(mask, cmap<span style="color:#f92672">=</span><span style="color:#e6db74">'gray'</span>)
+        plt.title(<span style="color:#e6db74">'Tissue Mask'</span>)
+        plt.axis(<span style="color:#e6db74">'off'</span>)
+
+        plt.subplot(<span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">4</span>)
+        plt.imshow(filled_tissue)
+        plt.title(f<span style="color:#e6db74">'Filled Tissue (Area: </span>{area_pixels}<span style="color:#e6db74"> px)'</span>)
+        plt.axis(<span style="color:#e6db74">'off'</span>)
+
+        plt.tight_layout()
+        base_name <span style="color:#f92672">=</span> os.path.splitext(os.path.basename(image_path))[<span style="color:#ae81ff">0</span>]
+        plt.savefig(f<span style="color:#e6db74">"{output_folder}/{base_name}_analysis.png"</span>, dpi<span style="color:#f92672">=</span><span style="color:#ae81ff">300</span>)
+        plt.close()
+
+    <span style="color:#66d9ef">return</span> area_pixels, mask, filled_tissue
+
+<span style="color:#66d9ef">def</span> process_folder(input_folder, output_folder, file_extensions<span style="color:#f92672">=</span><span style="color:#66d9ef">None</span>):
+    <span style="color:#66d9ef">if</span> file_extensions <span style="color:#f92672">is</span> <span style="color:#66d9ef">None</span>:
+        file_extensions <span style="color:#f92672">=</span> [<span style="color:#e6db74">'.jpg'</span>, <span style="color:#e6db74">'.jpeg'</span>, <span style="color:#e6db74">'.png'</span>, <span style="color:#e6db74">'.tif'</span>, <span style="color:#e6db74">'.tiff'</span>]
+
+    results <span style="color:#f92672">=</span> []
+    image_files <span style="color:#f92672">=</span> []
+
+    <span style="color:#66d9ef">for</span> ext <span style="color:#f92672">in</span> file_extensions:
+        image_files.extend(glob.glob(os.path.join(input_folder, f<span style="color:#e6db74">'*{ext}'</span>)))
+
+    <span style="color:#66d9ef">for</span> image_path <span style="color:#f92672">in</span> tqdm(image_files, desc<span style="color:#f92672">=</span><span style="color:#e6db74">"Processing images"</span>):
+        area, _, _ <span style="color:#f92672">=</span> calculate_tissue_area(image_path, save_visualizations<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>, output_folder<span style="color:#f92672">=</span>output_folder)
+        results.append({<span style="color:#e6db74">'image'</span>: os.path.basename(image_path), <span style="color:#e6db74">'area_pixels'</span>: area})
+
+    df <span style="color:#f92672">=</span> pd.DataFrame(results)
+    df.to_csv(os.path.join(output_folder, <span style="color:#e6db74">'tissue_area_summary.csv'</span>), index<span style="color:#f92672">=</span><span style="color:#66d9ef">False</span>)
 </code></pre></div>
+
 
 
 <h3 id="4-infer-drug-distributions">
