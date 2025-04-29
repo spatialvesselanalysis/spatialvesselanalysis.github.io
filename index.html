@@ -368,7 +368,109 @@ https://github.com/alex-shpak/hugo-book
   3.1 Normalization
   <a class="anchor" href="#31-normalization">#</a>
 </h4>
-  
+<p>The code <code>Area_slide.py</code> allows you to normalize your number on the sample area.</p>
+<div class="highlight"><pre><code class="language-python">
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+import os
+import glob
+import pandas as pd
+from tqdm import tqdm 
+
+def calculate_tissue_area(image_path, save_visualizations=False, output_folder=None):
+    # Read the image
+    img = cv2.imread(image_path)
+    if img is None:
+        print(f"Error: Could not read image {image_path}")
+        return 0, None, None
+    
+    # Convert to RGB (OpenCV loads as BGR)
+    img_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    
+    # Convert to LAB color space
+    lab = cv2.cvtColor(img, cv2.COLOR_BGR2LAB)
+    
+    # Extract the L channel (luminance)
+    l_channel = lab[:,:,0]
+    
+    # Apply threshold to separate tissue from background
+    _, binary = cv2.threshold(l_channel, 220, 255, cv2.THRESH_BINARY_INV)
+    
+    # Clean up the binary image
+    kernel = np.ones((5,5), np.uint8)
+    binary = cv2.morphologyEx(binary, cv2.MORPH_CLOSE, kernel)
+    binary = cv2.morphologyEx(binary, cv2.MORPH_OPEN, kernel)
+    
+    # Find contours
+    contours, _ = cv2.findContours(binary, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    
+    # Create a mask for the full tissue
+    mask = np.zeros_like(l_channel)
+    
+    # Draw all contours above a certain size (to avoid small artifacts)
+    min_contour_area = 1000
+    for contour in contours:
+        if cv2.contourArea(contour) > min_contour_area:
+            cv2.drawContours(mask, [contour], 0, 255, -1)
+    
+    # Calculate area in pixels
+    area_pixels = cv2.countNonZero(mask)
+    
+    # Create visualization of the filled tissue
+    filled_tissue = cv2.bitwise_and(img_rgb, img_rgb, mask=mask)
+    
+    if save_visualizations:
+        if output_folder is None:
+            output_folder = os.path.dirname(image_path) or '.'
+        
+        plt.figure(figsize=(15, 10))
+        plt.subplot(2, 2, 1)
+        plt.imshow(img_rgb)
+        plt.title('Original Image')
+        plt.axis('off')
+        
+        plt.subplot(2, 2, 2)
+        plt.imshow(binary, cmap='gray')
+        plt.title('Thresholded Image')
+        plt.axis('off')
+        
+        plt.subplot(2, 2, 3)
+        plt.imshow(mask, cmap='gray')
+        plt.title('Tissue Mask')
+        plt.axis('off')
+        
+        plt.subplot(2, 2, 4)
+        plt.imshow(filled_tissue)
+        plt.title(f'Filled Tissue (Area: {area_pixels} pixels)')
+        plt.axis('off')
+        
+        plt.tight_layout()
+        base_name = os.path.splitext(os.path.basename(image_path))[0]
+        plt.savefig(f"{output_folder}/{base_name}_analysis.png", dpi=300)
+        plt.close()
+    
+    return area_pixels, mask, filled_tissue
+
+def process_folder(input_folder, output_folder, file_extensions=None):
+    if file_extensions is None:
+        file_extensions = ['.jpg', '.jpeg', '.png', '.tif', '.tiff']
+    
+    results = []
+    image_files = []
+    
+    for ext in file_extensions:
+        image_files.extend(glob.glob(os.path.join(input_folder, f'*{ext}')))
+    
+    for image_path in tqdm(image_files, desc="Processing images"):
+        area, _, _ = calculate_tissue_area(image_path, save_visualizations=True, output_folder=output_folder)
+        results.append({'image': os.path.basename(image_path), 'area_pixels': area})
+    
+    df = pd.DataFrame(results)
+    df.to_csv(os.path.join(output_folder, 'tissue_area_summary.csv'), index=False)
+</code></pre></div>
+
+
 <h3 id="4-infer-drug-distributions">
   4. <strong>Infer Drug Distributions</strong>
   <a class="anchor" href="#4-infer-drug-distributions">#</a>
