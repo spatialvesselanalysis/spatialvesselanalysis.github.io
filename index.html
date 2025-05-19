@@ -8,7 +8,6 @@
   Spatial Vessel Analysis
   #
 
-This is example test.
 
   Overview
   #
@@ -19,8 +18,7 @@ The following pipeline offers a robust, reproducible, and scalable solution for 
 <meta name="color-scheme" content="light dark"><meta property="og:url" content="https://spatialvesselanalysis.github.io/">
   <meta property="og:site_name" content="Spatial Vessel Analysis">
   <meta property="og:title" content="Spatial Vessel Analysis">
-  <meta property="og:description" content="Spatial Vessel Analysis # This is example test.
-Overview # The following pipeline offers a robust, reproducible, and scalable solution for extracting vessel-related features from histological images. Accurate vascular network segmentation provides key insights into vascular conformation and remodeling. Additionally, this pipeline also correlates vascular structures with drug distribution. While particularly relevant in oncology for characterizing the tumor microenvironment, it may also be applied to other diseases where vascular alterations are of paramount importance, including those involving inflammation, fibrosis, and microvascular dysfunction. By enhancing our understanding of vascular-mediated disease progression and treatment delivery, this approach supports both research and clinical decision-making.">
+  <meta property="og:description" content="Spatial Vessel Analysis # Overview # The following pipeline offers a robust, reproducible, and scalable solution for extracting vessel-related features from histological images. Accurate vascular network segmentation provides key insights into vascular conformation and remodeling. Additionally, this pipeline also correlates vascular structures with drug distribution. While particularly relevant in oncology for characterizing the tumor microenvironment, it may also be applied to other diseases where vascular alterations are of paramount importance, including those involving inflammation, fibrosis, and microvascular dysfunction. By enhancing our understanding of vascular-mediated disease progression and treatment delivery, this approach supports both research and clinical decision-making.">
   <meta property="og:locale" content="en_us">
   <meta property="og:type" content="website">
 <title>Spatial Vessel Analysis | Spatial Vessel Analysis</title>
@@ -127,8 +125,9 @@ https://github.com/alex-shpak/hugo-book
       <ul>
         <li><a href="#1-prepare-your-data">1. <strong>Prepare Your Data</strong></a></li>
         <li><a href="#2-segment-vessels-and-extract-features-in-python">2. <strong>Segment Vessels and Extract Features in Python</strong></a></li>
-        <li><a href="#3-infer-drug-distributions">3. <strong>Infer Drug Distributions</strong></a></li>
-        <li><a href="#4-interpret-your-data">4. <strong>Interpret Your Data</strong></a></li>
+        <li><a href="#3-statistical-analyses">3. <strong>Statistical Analyses</strong></a></li>
+        <li><a href="#4-infer-drug-distributions">4. <strong>Infer Drug Distributions</strong></a></li>
+        <li><a href="#5-interpret-your-data">5. <strong>Interpret Your Data</strong></a></li>
       </ul>
     </li>
     <li><a href="#contributors">Contributors</a></li>
@@ -150,7 +149,6 @@ https://github.com/alex-shpak/hugo-book
   Spatial Vessel Analysis
   <a class="anchor" href="#spatial-vessel-analysis">#</a>
 </h1>
-<p>This is example test.</p>
 <h2 id="overview">
   Overview
   <a class="anchor" href="#overview">#</a>
@@ -185,12 +183,17 @@ https://github.com/alex-shpak/hugo-book
 <li>2.4 Feature extraction</li>
 </ul>
 </li>
+<li><strong>Statistical analyses</strong>:
+<ul>
+<li>3.1 Normalization</li>
+</ul>
+</li>
 <li><strong>Infer drug distribution</strong>
 <ul>
-<li>3.1 Generation of synthetic vessel masks</li>
-<li>3.2 Definition of a known drug distribution function</li>
-<li>3.3 Application of GP modelling on simulator</li>
-<li>3.4 Assesment of model accuracy</li>
+<li>4.1 Generation of synthetic vessel masks</li>
+<li>4.2 Definition of a known drug distribution function</li>
+<li>4.3 Application of GP modelling on simulator</li>
+<li>4.4 Assesment of model accuracy</li>
 </ul>
 </li>
 <li><strong>Interpret Your Data</strong></li>
@@ -226,7 +229,7 @@ https://github.com/alex-shpak/hugo-book
   2. <strong>Segment Vessels and Extract Features in Python</strong>
   <a class="anchor" href="#2-segment-vessels-and-extract-features-in-python">#</a>
 </h3>
-<p>This is where the true transformation — or as some may say, magic — happens. With the images at hand, you can perform vessel segmentation and feature extraction using Python. Simply run the <code>Segmentation.py</code> script as follows.</p>
+<p>This is where the true transformation — or as some may say, magic — happens. With the images at hand, you can perform vessel segmentation and feature extraction using Python. Simply run the <code>Segmentation.py</code> (script downloadable from the user slrenne&rsquo;s erivessel repository) script as follows.</p>
 <p>In the prelinimary setup, upload necessary libraries.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e">#python</span>
 </span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> cv2
@@ -347,20 +350,174 @@ https://github.com/alex-shpak/hugo-book
 </span></span></code></pre></div><p>The output is a CSV file <code>{folder}_Measurements.csv</code> containing quantitative measurements of each detected vessel in the segmented image. The columns of the CSV file represent different morphological properties of the vessels, and each row corresponds to one labeled vessel.</p>
 </li>
 </ul>
-<h3 id="3-infer-drug-distributions">
-  3. <strong>Infer Drug Distributions</strong>
-  <a class="anchor" href="#3-infer-drug-distributions">#</a>
+<h3 id="3-statistical-analyses">
+  3. <strong>Statistical Analyses</strong>
+  <a class="anchor" href="#3-statistical-analyses">#</a>
+</h3>
+<p>Now that you have quantitative data on your vessels, you can perform statistics to investigate what those numbers mean.</p>
+<ul>
+<li>
+<h4 id="31-normalization">
+  3.1 Normalization
+  <a class="anchor" href="#31-normalization">#</a>
+</h4>
+<p>Before you can apply statistical analyses, it is necessary to normalize your data. The code <code>Area_slide.py</code> (script downloadable from the user slrenne&rsquo;s erivessel repository) allows you to normalize the number of vessels on the tissue sample area. The function of this code is to segment the entire sample area through the L channel, also known as the luminance channel.</p>
+<p>To begin, set up the environment.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e">#python</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> cv2
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> numpy <span style="color:#66d9ef">as</span> np
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#66d9ef">as</span> plt
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> os
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> glob
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> pandas <span style="color:#66d9ef">as</span> pd
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> tqdm <span style="color:#f92672">import</span> tqdm 
+</span></span></code></pre></div><p>The following function takes the path to an image as input and returns the area of tissue present, optionally saving visualizations of the results. The image is read using OpenCV, then converted from BGR to RGB to LAB (L = luminance, A = green/red, B = blue/yellow). Here, only the L channel is extracted to help separate tissue from the background based on brightness.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e">#python</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">calculate_tissue_area</span>(image_path, save_visualizations<span style="color:#f92672">=</span><span style="color:#66d9ef">False</span>, output_folder<span style="color:#f92672">=</span><span style="color:#66d9ef">None</span>):
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  img <span style="color:#f92672">=</span> cv2<span style="color:#f92672">.</span>imread(image_path)
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> img <span style="color:#f92672">is</span> <span style="color:#66d9ef">None</span>:
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Error: Could not read image </span><span style="color:#e6db74">{</span>image_path<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>, <span style="color:#66d9ef">None</span>, <span style="color:#66d9ef">None</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  img_rgb <span style="color:#f92672">=</span> cv2<span style="color:#f92672">.</span>cvtColor(img, cv2<span style="color:#f92672">.</span>COLOR_BGR2RGB)
+</span></span><span style="display:flex;"><span>  lab <span style="color:#f92672">=</span> cv2<span style="color:#f92672">.</span>cvtColor(img, cv2<span style="color:#f92672">.</span>COLOR_BGR2LAB)
+</span></span><span style="display:flex;"><span>  l_channel <span style="color:#f92672">=</span> lab[:,:,<span style="color:#ae81ff">0</span>]
+</span></span></code></pre></div><p>You then apply a binary inverse threshold: pixels brighter than 220 (almost white) are set to 0 (black), while others are set to 255 (white). This isolates the darker tissue from the bright background. Next, you perform morhological operations and find the contours of white regions in the binary image, which should correspond to tissue.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e">#python</span>
+</span></span><span style="display:flex;"><span>  _, binary <span style="color:#f92672">=</span> cv2<span style="color:#f92672">.</span>threshold(l_channel, <span style="color:#ae81ff">220</span>, <span style="color:#ae81ff">255</span>, cv2<span style="color:#f92672">.</span>THRESH_BINARY_INV)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  kernel <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>ones((<span style="color:#ae81ff">5</span>,<span style="color:#ae81ff">5</span>), np<span style="color:#f92672">.</span>uint8)
+</span></span><span style="display:flex;"><span>  binary <span style="color:#f92672">=</span> cv2<span style="color:#f92672">.</span>morphologyEx(binary, cv2<span style="color:#f92672">.</span>MORPH_CLOSE, kernel)
+</span></span><span style="display:flex;"><span>  binary <span style="color:#f92672">=</span> cv2<span style="color:#f92672">.</span>morphologyEx(binary, cv2<span style="color:#f92672">.</span>MORPH_OPEN, kernel)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  contours, _ <span style="color:#f92672">=</span> cv2<span style="color:#f92672">.</span>findContours(binary, cv2<span style="color:#f92672">.</span>RETR_EXTERNAL, cv2<span style="color:#f92672">.</span>CHAIN_APPROX_SIMPLE)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  mask <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>zeros_like(l_channel)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  min_contour_area <span style="color:#f92672">=</span> <span style="color:#ae81ff">1000</span>  <span style="color:#75715e"># Adjust based on your image size</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">for</span> contour <span style="color:#f92672">in</span> contours:
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">if</span> cv2<span style="color:#f92672">.</span>contourArea(contour) <span style="color:#f92672">&gt;</span> min_contour_area:
+</span></span><span style="display:flex;"><span>          cv2<span style="color:#f92672">.</span>drawContours(mask, [contour], <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">255</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)
+</span></span></code></pre></div><p>Here, you count how many white pixels are present, knowing that each pixel corresponds to 1 unit of tissue area. Additionally a mask is used to extract only the tissue from the RGB image by making pixels outside the tissue black.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e">#python</span>
+</span></span><span style="display:flex;"><span>  area_pixels <span style="color:#f92672">=</span> cv2<span style="color:#f92672">.</span>countNonZero(mask)
+</span></span><span style="display:flex;"><span>  filled_tissue <span style="color:#f92672">=</span> cv2<span style="color:#f92672">.</span>bitwise_and(img_rgb, img_rgb, mask<span style="color:#f92672">=</span>mask)
+</span></span></code></pre></div><p>If enabled, the <code>save_visualizations</code> function generates a 2x2 subplot with: the original image, the binary threshold result, the tissue mask and the overlayed image with area shown in the title. The plots are then saved in the specified <code>output_folder</code> with <code>_analysis.png</code> suffix.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> save_visualizations:
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">if</span> output_folder <span style="color:#f92672">is</span> <span style="color:#66d9ef">None</span>:
+</span></span><span style="display:flex;"><span>          output_folder <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>dirname(image_path) <span style="color:#f92672">or</span> <span style="color:#e6db74">&#39;.&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      plt<span style="color:#f92672">.</span>figure(figsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">15</span>, <span style="color:#ae81ff">10</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      plt<span style="color:#f92672">.</span>subplot(<span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>      plt<span style="color:#f92672">.</span>imshow(img_rgb)
+</span></span><span style="display:flex;"><span>      plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#39;Original Image&#39;</span>)
+</span></span><span style="display:flex;"><span>      plt<span style="color:#f92672">.</span>axis(<span style="color:#e6db74">&#39;off&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      plt<span style="color:#f92672">.</span>subplot(<span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">2</span>)
+</span></span><span style="display:flex;"><span>      plt<span style="color:#f92672">.</span>imshow(binary, cmap<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;gray&#39;</span>)
+</span></span><span style="display:flex;"><span>      plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#39;Thresholded Image&#39;</span>)
+</span></span><span style="display:flex;"><span>      plt<span style="color:#f92672">.</span>axis(<span style="color:#e6db74">&#39;off&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      plt<span style="color:#f92672">.</span>subplot(<span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>)
+</span></span><span style="display:flex;"><span>      plt<span style="color:#f92672">.</span>imshow(mask, cmap<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;gray&#39;</span>)
+</span></span><span style="display:flex;"><span>      plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#39;Tissue Mask&#39;</span>)
+</span></span><span style="display:flex;"><span>      plt<span style="color:#f92672">.</span>axis(<span style="color:#e6db74">&#39;off&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      plt<span style="color:#f92672">.</span>subplot(<span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">4</span>)
+</span></span><span style="display:flex;"><span>      plt<span style="color:#f92672">.</span>imshow(filled_tissue)
+</span></span><span style="display:flex;"><span>      plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;Filled Tissue (Area: </span><span style="color:#e6db74">{</span>area_pixels<span style="color:#e6db74">}</span><span style="color:#e6db74"> pixels)&#39;</span>)
+</span></span><span style="display:flex;"><span>      plt<span style="color:#f92672">.</span>axis(<span style="color:#e6db74">&#39;off&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      plt<span style="color:#f92672">.</span>tight_layout()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      base_name <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>splitext(os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>basename(image_path))[<span style="color:#ae81ff">0</span>]
+</span></span><span style="display:flex;"><span>      plt<span style="color:#f92672">.</span>savefig(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{</span>output_folder<span style="color:#e6db74">}</span><span style="color:#e6db74">/</span><span style="color:#e6db74">{</span>base_name<span style="color:#e6db74">}</span><span style="color:#e6db74">_analysis.png&#34;</span>, dpi<span style="color:#f92672">=</span><span style="color:#ae81ff">300</span>)
+</span></span><span style="display:flex;"><span>      plt<span style="color:#f92672">.</span>close()
+</span></span></code></pre></div><p>At the end the <code>calculate_tissue_area</code> function returns the tissue area in pixels, the binary mask, and the RGB image with tissue highlighted.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> area_pixels, mask, filled_tissue
+</span></span></code></pre></div><p>The next function, <code>process_folder</code>, processes all image files in a given folder and applies the <code>calculate_tissue_area</code> function to each of them. The results are saved to a CSV file.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">process_folder</span>(input_folder, output_folder, file_extensions<span style="color:#f92672">=</span><span style="color:#66d9ef">None</span>):
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> file_extensions <span style="color:#f92672">is</span> <span style="color:#66d9ef">None</span>:
+</span></span><span style="display:flex;"><span>      file_extensions <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;.jpg&#39;</span>, <span style="color:#e6db74">&#39;.jpeg&#39;</span>, <span style="color:#e6db74">&#39;.png&#39;</span>, <span style="color:#e6db74">&#39;.tif&#39;</span>, <span style="color:#e6db74">&#39;.tiff&#39;</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  os<span style="color:#f92672">.</span>makedirs(output_folder, exist_ok<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  image_files <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">for</span> ext <span style="color:#f92672">in</span> file_extensions:
+</span></span><span style="display:flex;"><span>      image_files<span style="color:#f92672">.</span>extend(glob<span style="color:#f92672">.</span>glob(os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>join(input_folder, <span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;*</span><span style="color:#e6db74">{</span>ext<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;</span>)))
+</span></span><span style="display:flex;"><span>      image_files<span style="color:#f92672">.</span>extend(glob<span style="color:#f92672">.</span>glob(os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>join(input_folder, <span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;*</span><span style="color:#e6db74">{</span>ext<span style="color:#f92672">.</span>upper()<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;</span>)))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> image_files:
+</span></span><span style="display:flex;"><span>      print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;No image files found in </span><span style="color:#e6db74">{</span>input_folder<span style="color:#e6db74">}</span><span style="color:#e6db74"> with extensions </span><span style="color:#e6db74">{</span>file_extensions<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">None</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Found </span><span style="color:#e6db74">{</span>len(image_files)<span style="color:#e6db74">}</span><span style="color:#e6db74"> image files to process&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  results <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">for</span> img_path <span style="color:#f92672">in</span> tqdm(image_files, desc<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Processing slides&#34;</span>):
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">try</span>:
+</span></span><span style="display:flex;"><span>          filename <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>basename(img_path)
+</span></span><span style="display:flex;"><span>          area, mask, filled_tissue <span style="color:#f92672">=</span> calculate_tissue_area(img_path)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>          img <span style="color:#f92672">=</span> cv2<span style="color:#f92672">.</span>imread(img_path)
+</span></span><span style="display:flex;"><span>          base_name <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>splitext(filename)[<span style="color:#ae81ff">0</span>]
+</span></span><span style="display:flex;"><span>          cv2<span style="color:#f92672">.</span>imwrite(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{</span>output_folder<span style="color:#e6db74">}</span><span style="color:#e6db74">/</span><span style="color:#e6db74">{</span>base_name<span style="color:#e6db74">}</span><span style="color:#e6db74">_original.png&#34;</span>, img)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">if</span> mask <span style="color:#f92672">is</span> <span style="color:#f92672">not</span> <span style="color:#66d9ef">None</span>:
+</span></span><span style="display:flex;"><span>              cv2<span style="color:#f92672">.</span>imwrite(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{</span>output_folder<span style="color:#e6db74">}</span><span style="color:#e6db74">/</span><span style="color:#e6db74">{</span>base_name<span style="color:#e6db74">}</span><span style="color:#e6db74">_mask.png&#34;</span>, mask)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>          results<span style="color:#f92672">.</span>append({
+</span></span><span style="display:flex;"><span>              <span style="color:#e6db74">&#39;Image&#39;</span>: filename,
+</span></span><span style="display:flex;"><span>              <span style="color:#e6db74">&#39;Tissue Area (pixels)&#39;</span>: area
+</span></span><span style="display:flex;"><span>          })
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">except</span> <span style="color:#a6e22e">Exception</span> <span style="color:#66d9ef">as</span> e:
+</span></span><span style="display:flex;"><span>          print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Error processing </span><span style="color:#e6db74">{</span>img_path<span style="color:#e6db74">}</span><span style="color:#e6db74">: </span><span style="color:#e6db74">{</span>e<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> results:
+</span></span><span style="display:flex;"><span>      df <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>DataFrame(results)
+</span></span><span style="display:flex;"><span>      csv_path <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>join(output_folder, <span style="color:#e6db74">&#34;tissue_areas.csv&#34;</span>)
+</span></span><span style="display:flex;"><span>      df<span style="color:#f92672">.</span>to_csv(csv_path, index<span style="color:#f92672">=</span><span style="color:#66d9ef">False</span>)
+</span></span><span style="display:flex;"><span>      print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Results saved to </span><span style="color:#e6db74">{</span>csv_path<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">return</span> df
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>      print(<span style="color:#e6db74">&#34;No results were generated&#34;</span>)
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">None</span>   
+</span></span></code></pre></div><p>The final section of this script is the main execution block. It defines the folders to use, calls the processing function and checks whether results were produced by printing a confirmation or warning message accordingly.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+</span></span><span style="display:flex;"><span>  input_folder <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Input&#39;</span>
+</span></span><span style="display:flex;"><span>  output_folder <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Output&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Processing slides from </span><span style="color:#e6db74">{</span>input_folder<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>  print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Results will be saved to </span><span style="color:#e6db74">{</span>output_folder<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  df <span style="color:#f92672">=</span> process_folder(input_folder, output_folder)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> df <span style="color:#f92672">is</span> <span style="color:#f92672">not</span> <span style="color:#66d9ef">None</span>:
+</span></span><span style="display:flex;"><span>      print(<span style="color:#e6db74">&#34;Processing complete!&#34;</span>)
+</span></span><span style="display:flex;"><span>      print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;CSV file with area measurements saved to </span><span style="color:#e6db74">{</span>output_folder<span style="color:#e6db74">}</span><span style="color:#e6db74">/tissue_areas.csv&#34;</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>      print(<span style="color:#e6db74">&#34;No results were generated.&#34;</span>)
+</span></span></code></pre></div><p>Now that you have calculated the area of each tissue section in pixels, you can proceed in performing your desired statistical analyses normalizing on tissue area.</p>
+</li>
+</ul>
+<h3 id="4-infer-drug-distributions">
+  4. <strong>Infer Drug Distributions</strong>
+  <a class="anchor" href="#4-infer-drug-distributions">#</a>
 </h3>
 <p>Let&rsquo;s now explore a path illuminated by our newfound understanding of vascular network morphology, enhanced by the power of Gaussian Process (GP) Modelling, to uncover the biological relevance of vessel arrangement. As you know, any drug reaches it&rsquo;s target through vessels, but how exactly do vessel morphology and distribution impact the diffusion of compounds from the vessels into surrounding tissues? To answer, we must correlate the vascular network extracted from histological images with MALDI imaging data through GP modelling. Your aim is to model the spatial distribution of a drug within a tissue sample based on MALDI imaging, where pixel intensity is directly proportional to drug concentration. However, before applying GP modelling to real images, we must validate the model’s accuracy through simulations.</p>
 <blockquote>
 <p><strong>Theoretical Background</strong>: A <strong>Gaussian Process</strong> (GP) is a collection of random variables, where any finite subset follows a multivariate normal distribution. This statistical method offers a probabilistic framework for modelling spatial dependencies. It is widely used in spatial statistics and machine learning to infer continuous functions from discrete data points. In this context, GP modelling allows us to estimate the underlying drug distribution function based on observed MALDI intensities.</p></blockquote>
 <ul>
 <li>
-<h4 id="31-generating-synthetic-vessel-images">
-  3.1 Generating synthetic vessel images**
-  <a class="anchor" href="#31-generating-synthetic-vessel-images">#</a>
+<h4 id="41-generating-synthetic-vessel-images">
+  4.1 Generating synthetic vessel images
+  <a class="anchor" href="#41-generating-synthetic-vessel-images">#</a>
 </h4>
-<p>To begin, execute the <code>Final_optimized_4_Windows.R</code> you may find in this repository. Note that this code only works on windows operating systems.</p>
+<p>To begin, execute <code>Final_optimized_4_Windows.R</code> (script downloadable from the user slrenne&rsquo;s erivessel repository). Note that this code only works on windows operating systems.</p>
 <p>As usual, set up your environment. Notably, set a fixed seed for random number generation and import the <code>Statistical Rethinking</code> package (detailed intructions for installation may be found on <a href="https://github.com/rmcelreath/rethinking">Richard McElreath&rsquo;s rethinking repository</a>). We also create a parallel cluster to speed things up.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#75715e">#r</span>
 </span></span><span style="display:flex;"><span><span style="color:#a6e22e">set.seed</span>(<span style="color:#ae81ff">20241028</span>)
@@ -408,9 +565,9 @@ https://github.com/alex-shpak/hugo-book
 </span></span><span style="display:flex;"><span>mats <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">parLapply</span>(cl, <span style="color:#ae81ff">1</span><span style="color:#f92672">:</span>N_img, <span style="color:#66d9ef">function</span>(i) <span style="color:#a6e22e">test_function</span>(n, circles_list[[i]]))
 </span></span></code></pre></div></li>
 <li>
-<h4 id="32-creating-simulated-maldi-images">
-  3.2 Creating Simulated MALDI Images
-  <a class="anchor" href="#32-creating-simulated-maldi-images">#</a>
+<h4 id="42-creating-simulated-maldi-images">
+  4.2 Creating Simulated MALDI Images
+  <a class="anchor" href="#42-creating-simulated-maldi-images">#</a>
 </h4>
 <p>Next, we generate simulated MALDI intensity maps based on any predefined function you like, such as an exponential decay model:</p>
 <pre tabindex="0"><code class="language-math" data-lang="math">I(x) = \eta^2 e^{- \frac{d(x)^2}{2\rho^2}}
@@ -450,9 +607,9 @@ https://github.com/alex-shpak/hugo-book
 </span></span><span style="display:flex;"><span>})
 </span></span></code></pre></div></li>
 <li>
-<h4 id="33-inferring-drug-distribution-with-gp-regression">
-  3.3 Inferring drug distribution with GP regression
-  <a class="anchor" href="#33-inferring-drug-distribution-with-gp-regression">#</a>
+<h4 id="43-inferring-drug-distribution-with-gp-regression">
+  4.3 Inferring drug distribution with GP regression
+  <a class="anchor" href="#43-inferring-drug-distribution-with-gp-regression">#</a>
 </h4>
 <p>Now that we have simulated data, we fit a Gaussian Process model using <strong>Bayesian inference</strong> with <strong>Stan (rethinking package)</strong>.</p>
 <p>First, prepare data for the Bayesian model.</p>
@@ -496,9 +653,9 @@ https://github.com/alex-shpak/hugo-book
 </span></span><span style="display:flex;"><span>post <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">extract.samples</span>(GP_N)
 </span></span></code></pre></div></li>
 <li>
-<h4 id="34-validating-the-model">
-  3.4 <strong>Validating the Model</strong>
-  <a class="anchor" href="#34-validating-the-model">#</a>
+<h4 id="44-validating-the-model">
+  4.4 <strong>Validating the Model</strong>
+  <a class="anchor" href="#44-validating-the-model">#</a>
 </h4>
 <p>We visualize the inferred vs. true covariance functions by plotting the priors, the actual kernel and the estimated kernels (your posterior samples). Also, remember to stop the cluster to free resources.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#75715e">#r</span>
@@ -528,9 +685,9 @@ https://github.com/alex-shpak/hugo-book
 </span></span></code></pre></div><p>If the inferred decay function closely matches the predefined function, it means the GP model accurately recovers known distribution parameters. So, the model&rsquo;s acccuracy is validated and ready to be easily applied to real world histological and MALDI images!</p>
 </li>
 </ul>
-<h3 id="4-interpret-your-data">
-  4. <strong>Interpret Your Data</strong>
-  <a class="anchor" href="#4-interpret-your-data">#</a>
+<h3 id="5-interpret-your-data">
+  5. <strong>Interpret Your Data</strong>
+  <a class="anchor" href="#5-interpret-your-data">#</a>
 </h3>
 <p>Finally, you have arrived at the last step. This is where the numbers should start to talk, where images should transform into knowledge, and where you should ask yourself, <strong>“So what?”</strong>, what do these findings mean for your future research? And just like that, you’ve made sense of it all, you&rsquo;ve taken a raw histological image and extracted meaningful biological insights. So, go forth and analyze, because in the world of vessel analysis, the smallest capillary could hold the biggest discovery.</p>
 <h2 id="contributors">
@@ -598,8 +755,9 @@ https://github.com/alex-shpak/hugo-book
       <ul>
         <li><a href="#1-prepare-your-data">1. <strong>Prepare Your Data</strong></a></li>
         <li><a href="#2-segment-vessels-and-extract-features-in-python">2. <strong>Segment Vessels and Extract Features in Python</strong></a></li>
-        <li><a href="#3-infer-drug-distributions">3. <strong>Infer Drug Distributions</strong></a></li>
-        <li><a href="#4-interpret-your-data">4. <strong>Interpret Your Data</strong></a></li>
+        <li><a href="#3-statistical-analyses">3. <strong>Statistical Analyses</strong></a></li>
+        <li><a href="#4-infer-drug-distributions">4. <strong>Infer Drug Distributions</strong></a></li>
+        <li><a href="#5-interpret-your-data">5. <strong>Interpret Your Data</strong></a></li>
       </ul>
     </li>
     <li><a href="#contributors">Contributors</a></li>
