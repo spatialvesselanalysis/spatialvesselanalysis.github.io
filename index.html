@@ -313,8 +313,8 @@ https://github.com/alex-shpak/hugo-book
 </span></span></code></pre></div><p>Now that you have finalized the segmentation, save the processed image to the specified directory.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e">#python</span>
 </span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>imsave(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{</span>directory_to_save<span style="color:#e6db74">}{</span>folder<span style="color:#e6db74">}</span><span style="color:#e6db74">_Segmented.png&#34;</span>, opening, cmap<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;gray&#34;</span>)
-</span></span></code></pre></div><p>Example output: a binary image, created using a mask, where all vessels are represented in white and the background is shown in black.</p>
-<!-- raw HTML omitted -->
+</span></span></code></pre></div><p>Example output: a binary image, created using a mask, where all vessels are represented in white and the background is shown in black.
+<!-- raw HTML omitted --></p>
 <p>To enhance interpretability - because seeing is believing - contour detection outlines vessel boundaries as an overlay on the original images. Nothing beats a well-labeled, highlighted image that speaks for itself, showcasing exactly what you&rsquo;ve extracted.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e">#python</span>
 </span></span><span style="display:flex;"><span>contours, hierarchy <span style="color:#f92672">=</span> cv2<span style="color:#f92672">.</span>findContours(opening, cv2<span style="color:#f92672">.</span>RETR_TREE, cv2<span style="color:#f92672">.</span>CHAIN_APPROX_SIMPLE)
@@ -323,8 +323,8 @@ https://github.com/alex-shpak/hugo-book
 </span></span><span style="display:flex;"><span>   cv2<span style="color:#f92672">.</span>drawContours(original, [c], <span style="color:#ae81ff">0</span>, (<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">255</span>, <span style="color:#ae81ff">0</span>), <span style="color:#ae81ff">5</span>)
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span> cv2<span style="color:#f92672">.</span>imwrite(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{</span>directory_to_save<span style="color:#e6db74">}{</span>folder<span style="color:#e6db74">}</span><span style="color:#e6db74">_Vessels.jpg&#34;</span>, original)
-</span></span></code></pre></div><p>Example output: the original histological image, with vessel countours highlighted in green.</p>
-<!-- raw HTML omitted -->
+</span></span></code></pre></div><p>Example output: the original histological image, with vessel countours highlighted in green.
+<!-- raw HTML omitted --></p>
 </li>
 <li>
 <h4 id="24-feature-extraction">
@@ -437,7 +437,9 @@ https://github.com/alex-shpak/hugo-book
 </span></span><span style="display:flex;"><span>      plt<span style="color:#f92672">.</span>close()
 </span></span></code></pre></div><p>At the end the <code>calculate_tissue_area</code> function returns the tissue area in pixels, the binary mask, and the RGB image with tissue highlighted.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> area_pixels, mask, filled_tissue
-</span></span></code></pre></div><p>The next function, <code>process_folder</code>, processes all image files in a given folder and applies the <code>calculate_tissue_area</code> function to each of them. The results are saved to a CSV file.</p>
+</span></span></code></pre></div><p>Example output: a binary image showing the background in white and the total tissue area in white.
+<!-- raw HTML omitted --></p>
+<p>The next function, <code>process_folder</code>, processes all image files in a given folder and applies the <code>calculate_tissue_area</code> function to each of them. The results are saved to a CSV file.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">process_folder</span>(input_folder, output_folder, file_extensions<span style="color:#f92672">=</span><span style="color:#66d9ef">None</span>):
 </span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> file_extensions <span style="color:#f92672">is</span> <span style="color:#66d9ef">None</span>:
 </span></span><span style="display:flex;"><span>      file_extensions <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;.jpg&#39;</span>, <span style="color:#e6db74">&#39;.jpeg&#39;</span>, <span style="color:#e6db74">&#39;.png&#39;</span>, <span style="color:#e6db74">&#39;.tif&#39;</span>, <span style="color:#e6db74">&#39;.tiff&#39;</span>]
