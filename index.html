@@ -25,15 +25,28 @@ The following pipeline offers a robust, reproducible, and scalable solution for 
 <link rel="icon" href="/favicon.png" >
 <link rel="manifest" href="/manifest.json">
 <link rel="canonical" href="https://spatialvesselanalysis.github.io/">
-<link rel="stylesheet" href="/book.min.a7616cf2799b58bddffce9438e31fdbfc6393687cfc0950a4a17cd1cce7e35f6.css" integrity="sha256-p2Fs8nmbWL3f/OlDjjH9v8Y5NofPwJUKShfNHM5&#43;NfY=" crossorigin="anonymous">
-  <script defer src="/fuse.min.js"></script>
-  <script defer src="/en.search.min.2b6333591953211fc501497937cbcdc6fcf29ad8ccca8f8e9dfa3e18bbb5848a.js" integrity="sha256-K2MzWRlTIR/FAUl5N8vNxvzymtjMyo&#43;Onfo&#43;GLu1hIo=" crossorigin="anonymous"></script>
-<link rel="alternate" type="application/rss+xml" href="https://spatialvesselanalysis.github.io/index.xml" title="Spatial Vessel Analysis" />
+<link rel="stylesheet" href="/book.min.a7616cf2799b58bddffce9438e31fdbfc6393687cfc0950a4a17cd1cce7e35f6.css" integrity="sha256-p2Fs8nmbWL3f/OlDjjH9v8Y5NofPwJUKShfNHM5&#43;NfY=" crossorigin="anonymous"><link rel="alternate" type="application/rss+xml" href="https://spatialvesselanalysis.github.io/index.xml" title="Spatial Vessel Analysis" />
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
 -->
   
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/contrib/auto-render.min.js" crossorigin="anonymous"
+    onload="renderMathInElement(document.body, {
+      delimiters: [
+        {left: '$$', right: '$$', display: true},
+        {left: '\\(', right: '\\)', display: false},
+        {left: '$', right: '$', display: false}
+      ]
+    });">
+  </script>
+
+
+
+<link rel="stylesheet" href="/book.min.css">
+<script defer src="/en.search.min.2b6333591953211fc501497937cbcdc6fcf29ad8ccca8f8e9dfa3e18bbb5848a.js"></script>
 </head>
 <body dir="ltr">
   <input type="checkbox" class="hidden toggle" id="menu-control" />
@@ -48,13 +61,6 @@ https://github.com/alex-shpak/hugo-book
   </a>
 </h2>
 
-
-<div class="book-search hidden">
-  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
-  <div class="book-search-spinner hidden"></div>
-  <ul id="book-search-results"></ul>
-</div>
-<script>document.querySelector(".book-search").classList.remove("hidden")</script>
 
 
 
@@ -313,8 +319,10 @@ https://github.com/alex-shpak/hugo-book
 </span></span></code></pre></div><p>Now that you have finalized the segmentation, save the processed image to the specified directory.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e">#python</span>
 </span></span><span style="display:flex;"><span>plt<span style="color:#f92672">.</span>imsave(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{</span>directory_to_save<span style="color:#e6db74">}{</span>folder<span style="color:#e6db74">}</span><span style="color:#e6db74">_Segmented.png&#34;</span>, opening, cmap<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;gray&#34;</span>)
-</span></span></code></pre></div><p>Example output: a binary image, created using a mask, where all vessels are represented in white and the background is shown in black.
-<!-- raw HTML omitted --></p>
+</span></span></code></pre></div><p>Example output: a binary image, created using a mask, where all vessels are represented in white and the background is shown in black.</p>
+ <p align="center">
+   <img src="/images/Segmented.png" alt="Image of segmented vessels" width="400">
+ </p>
 <p>To enhance interpretability - because seeing is believing - contour detection outlines vessel boundaries as an overlay on the original images. Nothing beats a well-labeled, highlighted image that speaks for itself, showcasing exactly what you&rsquo;ve extracted.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e">#python</span>
 </span></span><span style="display:flex;"><span>contours, hierarchy <span style="color:#f92672">=</span> cv2<span style="color:#f92672">.</span>findContours(opening, cv2<span style="color:#f92672">.</span>RETR_TREE, cv2<span style="color:#f92672">.</span>CHAIN_APPROX_SIMPLE)
@@ -323,8 +331,10 @@ https://github.com/alex-shpak/hugo-book
 </span></span><span style="display:flex;"><span>   cv2<span style="color:#f92672">.</span>drawContours(original, [c], <span style="color:#ae81ff">0</span>, (<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">255</span>, <span style="color:#ae81ff">0</span>), <span style="color:#ae81ff">5</span>)
 </span></span><span style="display:flex;"><span>
 </span></span><span style="display:flex;"><span> cv2<span style="color:#f92672">.</span>imwrite(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{</span>directory_to_save<span style="color:#e6db74">}{</span>folder<span style="color:#e6db74">}</span><span style="color:#e6db74">_Vessels.jpg&#34;</span>, original)
-</span></span></code></pre></div><p>Example output: the original histological image, with vessel countours highlighted in green.
-<!-- raw HTML omitted --></p>
+</span></span></code></pre></div><p>Example output: the original histological image, with vessel countours highlighted in green.</p>
+ <p align="center">
+   <img src="/images/Contoured.jpg" alt="Image of contoured vessels" width="400">
+ </p>
 </li>
 <li>
 <h4 id="24-feature-extraction">
@@ -437,8 +447,10 @@ https://github.com/alex-shpak/hugo-book
 </span></span><span style="display:flex;"><span>      plt<span style="color:#f92672">.</span>close()
 </span></span></code></pre></div><p>At the end the <code>calculate_tissue_area</code> function returns the tissue area in pixels, the binary mask, and the RGB image with tissue highlighted.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> area_pixels, mask, filled_tissue
-</span></span></code></pre></div><p>Example output: a binary image showing the background in white and the total tissue area in white.
-<!-- raw HTML omitted --></p>
+</span></span></code></pre></div><p>Example output: a binary image showing the background in black and the total tissue area in white.</p>
+ <p align="center">
+   <img src="/images/Area.png" alt="Binary image showing tissue as white and background as black" width="400">
+ </p>
 <p>The next function, <code>process_folder</code>, processes all image files in a given folder and applies the <code>calculate_tissue_area</code> function to each of them. The results are saved to a CSV file.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">process_folder</span>(input_folder, output_folder, file_extensions<span style="color:#f92672">=</span><span style="color:#66d9ef">None</span>):
 </span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> file_extensions <span style="color:#f92672">is</span> <span style="color:#66d9ef">None</span>:
@@ -572,12 +584,14 @@ https://github.com/alex-shpak/hugo-book
   <a class="anchor" href="#42-creating-simulated-maldi-images">#</a>
 </h4>
 <p>Next, we generate simulated MALDI intensity maps based on any predefined function you like, such as an exponential decay model:</p>
-<pre tabindex="0"><code class="language-math" data-lang="math">I(x) = \eta^2 e^{- \frac{d(x)^2}{2\rho^2}}
-</code></pre><p>where we manually define the parameters:</p>
+<p>$$
+I(x) = \eta^2 e^{- \frac{d(x)^2}{2\rho^2}}
+$$</p>
+<p>where we manually define the parameters:</p>
 <ul>
-<li>$d(x)$, the Euclidean distance from vessels,</li>
-<li>$\eta^2$, the signal variance,</li>
-<li>$\rho$, the characteristic length scale controlling spatial correlation.</li>
+<li>$d(x)$: the Euclidean distance from vessels</li>
+<li>$\eta^2$: the signal variance</li>
+<li>$\rho$: the characteristic length scale controlling spatial correlation</li>
 </ul>
 <p>First, compute Euclidean distance matrices for each image in parallel.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#75715e">#r</span>
