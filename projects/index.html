@@ -4,38 +4,55 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="
-  Contributors
+  Step-by-Step Guide
   #
 
-G. Grion, K. Roufail, F. E. Colella, Dr. Ö. Mintemur, Dr. S. L. Renne.
+So, you&rsquo;ve some histological images and a good dose of scientific curiosity. Now what? Let&rsquo;s walk through the pipeline together, breaking it down step by step.
 
-  Citation
-  #
+Prepare Your Data:
 
-If you use this pipeline, please cite:
+1.1 Stain the histological images of interest for CD31
+1.2 Ensure the images are formatted correctly
+1.3 Remove image artifacts
 
-Renne et al., Integrating Spatial Vessel Analysis into Tumour Microenvironment Characterization, Virchows Arch, 485(Suppl 1), 2024.
 
-  Contact
-  #
+Segment Vessels and Extract Features in Python:
 
-For inquiries, please reach out via GitHub Issues.">
+2.1 Convertion of RGB to HSV format
+2.2 Application of Otsu’s thresholding
+2.3 Morphological operations
+2.4 Feature extraction
+
+
+Statistical analyses:
+
+3.1 Normalization
+
+
+Infer drug distribution
+
+4.1 Generation of synthetic vessel masks
+4.2 Definition of a known drug distribution function
+4.3 Application of GP modelling on simulator
+4.4 Assesment of model accuracy
+
+
+Interpret Your Data
+">
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
 <meta name="color-scheme" content="light dark"><meta property="og:url" content="https://spatialvesselanalysis.github.io/projects/">
-  <meta property="og:site_name" content="Spatial Vessel Analysis">
-  <meta property="og:title" content="About Us">
-  <meta property="og:description" content="Contributors # G. Grion, K. Roufail, F. E. Colella, Dr. Ö. Mintemur, Dr. S. L. Renne.
-Citation # If you use this pipeline, please cite:
-Renne et al., Integrating Spatial Vessel Analysis into Tumour Microenvironment Characterization, Virchows Arch, 485(Suppl 1), 2024.
-Contact # For inquiries, please reach out via GitHub Issues.">
+  <meta property="og:site_name" content="Home">
+  <meta property="og:title" content="Step-by-Step Guide">
+  <meta property="og:description" content="Step-by-Step Guide # So, you’ve some histological images and a good dose of scientific curiosity. Now what? Let’s walk through the pipeline together, breaking it down step by step.
+Prepare Your Data: 1.1 Stain the histological images of interest for CD31 1.2 Ensure the images are formatted correctly 1.3 Remove image artifacts Segment Vessels and Extract Features in Python: 2.1 Convertion of RGB to HSV format 2.2 Application of Otsu’s thresholding 2.3 Morphological operations 2.4 Feature extraction Statistical analyses: 3.1 Normalization Infer drug distribution 4.1 Generation of synthetic vessel masks 4.2 Definition of a known drug distribution function 4.3 Application of GP modelling on simulator 4.4 Assesment of model accuracy Interpret Your Data">
   <meta property="og:locale" content="en_us">
   <meta property="og:type" content="website">
-<title>About Us | Spatial Vessel Analysis</title>
+<title>Step-by-Step Guide | Home</title>
 <link rel="icon" href="/favicon.png" >
 <link rel="manifest" href="/manifest.json">
 <link rel="canonical" href="https://spatialvesselanalysis.github.io/projects/">
-<link rel="stylesheet" href="/book.min.a7616cf2799b58bddffce9438e31fdbfc6393687cfc0950a4a17cd1cce7e35f6.css" integrity="sha256-p2Fs8nmbWL3f/OlDjjH9v8Y5NofPwJUKShfNHM5&#43;NfY=" crossorigin="anonymous"><link rel="alternate" type="application/rss+xml" href="https://spatialvesselanalysis.github.io/projects/index.xml" title="Spatial Vessel Analysis" />
+<link rel="stylesheet" href="/book.min.a7616cf2799b58bddffce9438e31fdbfc6393687cfc0950a4a17cd1cce7e35f6.css" integrity="sha256-p2Fs8nmbWL3f/OlDjjH9v8Y5NofPwJUKShfNHM5&#43;NfY=" crossorigin="anonymous"><link rel="alternate" type="application/rss+xml" href="https://spatialvesselanalysis.github.io/projects/index.xml" title="Home" />
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -67,7 +84,7 @@ https://github.com/alex-shpak/hugo-book
         
   <nav>
 <h2 class="book-brand">
-  <a class="flex align-center" href="/"><span>Spatial Vessel Analysis</span>
+  <a class="flex align-center" href="/"><span>Home</span>
   </a>
 </h2>
 
@@ -98,7 +115,7 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="/projects/" class="active">About Us</a>
+    <a href="/projects/" class="active">Step-by-Step Guide</a>
   
 
           
@@ -111,13 +128,78 @@ https://github.com/alex-shpak/hugo-book
   
 
   
-    <a href="/projects/first-project/" class="">Artifact correction</a>
+    <a href="/projects/first-project/" class="">Data Preparation</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/projects/second-project/" class="">Vessel Segmentation</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/projects/third-project/" class="">Statistics</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/projects/fourth-project/" class="">Drug Distribution</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/projects/fith-projct/" class="">Interpretation</a>
   
 
         </li>
       
     
   </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/about/" class="">About Us</a>
+  
 
         </li>
       
@@ -157,7 +239,7 @@ https://github.com/alex-shpak/hugo-book
     <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
   </label>
 
-  <h3>About Us</h3>
+  <h3>Step-by-Step Guide</h3>
 
   <label for="toc-control">
     
@@ -171,13 +253,7 @@ https://github.com/alex-shpak/hugo-book
   <aside class="hidden clearfix">
     
   
-<nav id="TableOfContents">
-  <ul>
-    <li><a href="#contributors">Contributors</a></li>
-    <li><a href="#citation">Citation</a></li>
-    <li><a href="#contact">Contact</a></li>
-  </ul>
-</nav>
+<nav id="TableOfContents"></nav>
 
 
 
@@ -188,23 +264,42 @@ https://github.com/alex-shpak/hugo-book
 
       
       
-  <article class="markdown book-article"><h2 id="contributors">
-  Contributors
-  <a class="anchor" href="#contributors">#</a>
-</h2>
-<p>G. Grion, K. Roufail, F. E. Colella, Dr. Ö. Mintemur, Dr. S. L. Renne.</p>
-<h2 id="citation">
-  Citation
-  <a class="anchor" href="#citation">#</a>
-</h2>
-<p>If you use this pipeline, please cite:</p>
-<blockquote>
-<p>Renne et al., Integrating Spatial Vessel Analysis into Tumour Microenvironment Characterization, <em>Virchows Arch</em>, 485(Suppl 1), 2024.</p></blockquote>
-<h2 id="contact">
-  Contact
-  <a class="anchor" href="#contact">#</a>
-</h2>
-<p>For inquiries, please reach out via <a href="https://github.com/slrenne/erivessel/issues">GitHub Issues</a>.</p>
+  <article class="markdown book-article"><h1 id="step-by-step-guide">
+  Step-by-Step Guide
+  <a class="anchor" href="#step-by-step-guide">#</a>
+</h1>
+<p>So, you&rsquo;ve some histological images and a good dose of scientific curiosity. Now what? Let&rsquo;s walk through the pipeline together, breaking it down step by step.</p>
+<ol>
+<li><strong>Prepare Your Data</strong>:
+<ul>
+<li>1.1 Stain the histological images of interest for CD31</li>
+<li>1.2 Ensure the images are formatted correctly</li>
+<li>1.3 Remove image artifacts</li>
+</ul>
+</li>
+<li><strong>Segment Vessels and Extract Features in Python</strong>:
+<ul>
+<li>2.1 Convertion of RGB to HSV format</li>
+<li>2.2 Application of Otsu’s thresholding</li>
+<li>2.3 Morphological operations</li>
+<li>2.4 Feature extraction</li>
+</ul>
+</li>
+<li><strong>Statistical analyses</strong>:
+<ul>
+<li>3.1 Normalization</li>
+</ul>
+</li>
+<li><strong>Infer drug distribution</strong>
+<ul>
+<li>4.1 Generation of synthetic vessel masks</li>
+<li>4.2 Definition of a known drug distribution function</li>
+<li>4.3 Application of GP modelling on simulator</li>
+<li>4.4 Assesment of model accuracy</li>
+</ul>
+</li>
+<li><strong>Interpret Your Data</strong></li>
+</ol>
 </article>
  
       
@@ -244,13 +339,7 @@ https://github.com/alex-shpak/hugo-book
       <div class="book-toc-content">
         
   
-<nav id="TableOfContents">
-  <ul>
-    <li><a href="#contributors">Contributors</a></li>
-    <li><a href="#citation">Citation</a></li>
-    <li><a href="#contact">Contact</a></li>
-  </ul>
-</nav>
+<nav id="TableOfContents"></nav>
 
 
  

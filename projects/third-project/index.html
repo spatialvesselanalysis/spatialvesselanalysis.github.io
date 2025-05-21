@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="
+  3. Statistical Analyses
+  #
+
+Now that you have quantitative data on your vessels, you can perform statistics to investigate what those numbers mean.
+
+
+
+  3.1 Normalization
+  #
+
+Before you can apply statistical analyses, it is necessary to normalize your data. The code Area_slide.py (script downloadable from the user slrenne&rsquo;s erivessel repository) allows you to normalize the number of vessels on the tissue sample area. The function of this code is to segment the entire sample area through the L channel, also known as the luminance channel.">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="https://spatialvesselanalysis.github.io/projects/third-project/">
+  <meta property="og:site_name" content="Home">
+  <meta property="og:title" content="Statistics">
+  <meta property="og:description" content="3. Statistical Analyses # Now that you have quantitative data on your vessels, you can perform statistics to investigate what those numbers mean.
+3.1 Normalization # Before you can apply statistical analyses, it is necessary to normalize your data. The code Area_slide.py (script downloadable from the user slrenne’s erivessel repository) allows you to normalize the number of vessels on the tissue sample area. The function of this code is to segment the entire sample area through the L channel, also known as the luminance channel.">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="projects">
+    <meta property="article:published_time" content="2025-05-21T00:00:00+00:00">
+    <meta property="article:modified_time" content="2025-05-21T00:00:00+00:00">
+<title>Statistics | Home</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="https://spatialvesselanalysis.github.io/projects/third-project/">
+<link rel="stylesheet" href="/book.min.a7616cf2799b58bddffce9438e31fdbfc6393687cfc0950a4a17cd1cce7e35f6.css" integrity="sha256-p2Fs8nmbWL3f/OlDjjH9v8Y5NofPwJUKShfNHM5&#43;NfY=" crossorigin="anonymous"><!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/contrib/auto-render.min.js" crossorigin="anonymous"
+    onload="renderMathInElement(document.body, {
+      delimiters: [
+        {left: '$$', right: '$$', display: true},
+        {left: '\\(', right: '\\)', display: false},
+        {left: '$', right: '$', display: false}
+      ]
+    });">
+  </script>
+
+
+
+<link rel="stylesheet" href="/book.min.css">
+<script defer src="/en.search.min.2b6333591953211fc501497937cbcdc6fcf29ad8ccca8f8e9dfa3e18bbb5848a.js"></script>
+</head>
+<body dir="ltr">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    <aside class="book-menu">
+      <div class="book-menu-content">
+        
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>Home</span>
+  </a>
+</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/projects/" class="">Step-by-Step Guide</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/projects/first-project/" class="">Data Preparation</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/projects/second-project/" class="">Vessel Segmentation</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/projects/third-project/" class="active">Statistics</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/projects/fourth-project/" class="">Drug Distribution</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/projects/fith-projct/" class="">Interpretation</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/about/" class="">About Us</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+ 
+      </div>
+    </aside>
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>Statistics</h3>
+
+  <label for="toc-control">
+    
+    <img src="/svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#31-normalization">3.1 Normalization</a></li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown book-article"><h1 id="3-statistical-analyses">
+  3. Statistical Analyses
+  <a class="anchor" href="#3-statistical-analyses">#</a>
+</h1>
+<p>Now that you have quantitative data on your vessels, you can perform statistics to investigate what those numbers mean.</p>
+<ul>
+<li>
+<h2 id="31-normalization">
+  3.1 Normalization
+  <a class="anchor" href="#31-normalization">#</a>
+</h2>
+<p>Before you can apply statistical analyses, it is necessary to normalize your data. The code <code>Area_slide.py</code> (script downloadable from the user slrenne&rsquo;s erivessel repository) allows you to normalize the number of vessels on the tissue sample area. The function of this code is to segment the entire sample area through the L channel, also known as the luminance channel.</p>
+<p>To begin, set up the environment.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e">#python</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> cv2
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> numpy <span style="color:#66d9ef">as</span> np
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> matplotlib.pyplot <span style="color:#66d9ef">as</span> plt
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> os
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> glob
+</span></span><span style="display:flex;"><span><span style="color:#f92672">import</span> pandas <span style="color:#66d9ef">as</span> pd
+</span></span><span style="display:flex;"><span><span style="color:#f92672">from</span> tqdm <span style="color:#f92672">import</span> tqdm 
+</span></span></code></pre></div><p>The following function takes the path to an image as input and returns the area of tissue present, optionally saving visualizations of the results. The image is read using OpenCV, then converted from BGR to RGB to LAB (L = luminance, A = green/red, B = blue/yellow). Here, only the L channel is extracted to help separate tissue from the background based on brightness.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e">#python</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">calculate_tissue_area</span>(image_path, save_visualizations<span style="color:#f92672">=</span><span style="color:#66d9ef">False</span>, output_folder<span style="color:#f92672">=</span><span style="color:#66d9ef">None</span>):
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  img <span style="color:#f92672">=</span> cv2<span style="color:#f92672">.</span>imread(image_path)
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> img <span style="color:#f92672">is</span> <span style="color:#66d9ef">None</span>:
+</span></span><span style="display:flex;"><span>    print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Error: Could not read image </span><span style="color:#e6db74">{</span>image_path<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>, <span style="color:#66d9ef">None</span>, <span style="color:#66d9ef">None</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  img_rgb <span style="color:#f92672">=</span> cv2<span style="color:#f92672">.</span>cvtColor(img, cv2<span style="color:#f92672">.</span>COLOR_BGR2RGB)
+</span></span><span style="display:flex;"><span>  lab <span style="color:#f92672">=</span> cv2<span style="color:#f92672">.</span>cvtColor(img, cv2<span style="color:#f92672">.</span>COLOR_BGR2LAB)
+</span></span><span style="display:flex;"><span>  l_channel <span style="color:#f92672">=</span> lab[:,:,<span style="color:#ae81ff">0</span>]
+</span></span></code></pre></div><p>You then apply a binary inverse threshold: pixels brighter than 220 (almost white) are set to 0 (black), while others are set to 255 (white). This isolates the darker tissue from the bright background. Next, you perform morhological operations and find the contours of white regions in the binary image, which should correspond to tissue.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e">#python</span>
+</span></span><span style="display:flex;"><span>  _, binary <span style="color:#f92672">=</span> cv2<span style="color:#f92672">.</span>threshold(l_channel, <span style="color:#ae81ff">220</span>, <span style="color:#ae81ff">255</span>, cv2<span style="color:#f92672">.</span>THRESH_BINARY_INV)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  kernel <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>ones((<span style="color:#ae81ff">5</span>,<span style="color:#ae81ff">5</span>), np<span style="color:#f92672">.</span>uint8)
+</span></span><span style="display:flex;"><span>  binary <span style="color:#f92672">=</span> cv2<span style="color:#f92672">.</span>morphologyEx(binary, cv2<span style="color:#f92672">.</span>MORPH_CLOSE, kernel)
+</span></span><span style="display:flex;"><span>  binary <span style="color:#f92672">=</span> cv2<span style="color:#f92672">.</span>morphologyEx(binary, cv2<span style="color:#f92672">.</span>MORPH_OPEN, kernel)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  contours, _ <span style="color:#f92672">=</span> cv2<span style="color:#f92672">.</span>findContours(binary, cv2<span style="color:#f92672">.</span>RETR_EXTERNAL, cv2<span style="color:#f92672">.</span>CHAIN_APPROX_SIMPLE)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  mask <span style="color:#f92672">=</span> np<span style="color:#f92672">.</span>zeros_like(l_channel)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  min_contour_area <span style="color:#f92672">=</span> <span style="color:#ae81ff">1000</span>  <span style="color:#75715e"># Adjust based on your image size</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">for</span> contour <span style="color:#f92672">in</span> contours:
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">if</span> cv2<span style="color:#f92672">.</span>contourArea(contour) <span style="color:#f92672">&gt;</span> min_contour_area:
+</span></span><span style="display:flex;"><span>          cv2<span style="color:#f92672">.</span>drawContours(mask, [contour], <span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">255</span>, <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>)
+</span></span></code></pre></div><p>Here, you count how many white pixels are present, knowing that each pixel corresponds to 1 unit of tissue area. Additionally a mask is used to extract only the tissue from the RGB image by making pixels outside the tissue black.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#75715e">#python</span>
+</span></span><span style="display:flex;"><span>  area_pixels <span style="color:#f92672">=</span> cv2<span style="color:#f92672">.</span>countNonZero(mask)
+</span></span><span style="display:flex;"><span>  filled_tissue <span style="color:#f92672">=</span> cv2<span style="color:#f92672">.</span>bitwise_and(img_rgb, img_rgb, mask<span style="color:#f92672">=</span>mask)
+</span></span></code></pre></div><p>If enabled, the <code>save_visualizations</code> function generates a 2x2 subplot with: the original image, the binary threshold result, the tissue mask and the overlayed image with area shown in the title. The plots are then saved in the specified <code>output_folder</code> with <code>_analysis.png</code> suffix.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> save_visualizations:
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">if</span> output_folder <span style="color:#f92672">is</span> <span style="color:#66d9ef">None</span>:
+</span></span><span style="display:flex;"><span>          output_folder <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>dirname(image_path) <span style="color:#f92672">or</span> <span style="color:#e6db74">&#39;.&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      plt<span style="color:#f92672">.</span>figure(figsize<span style="color:#f92672">=</span>(<span style="color:#ae81ff">15</span>, <span style="color:#ae81ff">10</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      plt<span style="color:#f92672">.</span>subplot(<span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>      plt<span style="color:#f92672">.</span>imshow(img_rgb)
+</span></span><span style="display:flex;"><span>      plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#39;Original Image&#39;</span>)
+</span></span><span style="display:flex;"><span>      plt<span style="color:#f92672">.</span>axis(<span style="color:#e6db74">&#39;off&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      plt<span style="color:#f92672">.</span>subplot(<span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">2</span>)
+</span></span><span style="display:flex;"><span>      plt<span style="color:#f92672">.</span>imshow(binary, cmap<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;gray&#39;</span>)
+</span></span><span style="display:flex;"><span>      plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#39;Thresholded Image&#39;</span>)
+</span></span><span style="display:flex;"><span>      plt<span style="color:#f92672">.</span>axis(<span style="color:#e6db74">&#39;off&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      plt<span style="color:#f92672">.</span>subplot(<span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>)
+</span></span><span style="display:flex;"><span>      plt<span style="color:#f92672">.</span>imshow(mask, cmap<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;gray&#39;</span>)
+</span></span><span style="display:flex;"><span>      plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">&#39;Tissue Mask&#39;</span>)
+</span></span><span style="display:flex;"><span>      plt<span style="color:#f92672">.</span>axis(<span style="color:#e6db74">&#39;off&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      plt<span style="color:#f92672">.</span>subplot(<span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">4</span>)
+</span></span><span style="display:flex;"><span>      plt<span style="color:#f92672">.</span>imshow(filled_tissue)
+</span></span><span style="display:flex;"><span>      plt<span style="color:#f92672">.</span>title(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;Filled Tissue (Area: </span><span style="color:#e6db74">{</span>area_pixels<span style="color:#e6db74">}</span><span style="color:#e6db74"> pixels)&#39;</span>)
+</span></span><span style="display:flex;"><span>      plt<span style="color:#f92672">.</span>axis(<span style="color:#e6db74">&#39;off&#39;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      plt<span style="color:#f92672">.</span>tight_layout()
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      base_name <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>splitext(os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>basename(image_path))[<span style="color:#ae81ff">0</span>]
+</span></span><span style="display:flex;"><span>      plt<span style="color:#f92672">.</span>savefig(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{</span>output_folder<span style="color:#e6db74">}</span><span style="color:#e6db74">/</span><span style="color:#e6db74">{</span>base_name<span style="color:#e6db74">}</span><span style="color:#e6db74">_analysis.png&#34;</span>, dpi<span style="color:#f92672">=</span><span style="color:#ae81ff">300</span>)
+</span></span><span style="display:flex;"><span>      plt<span style="color:#f92672">.</span>close()
+</span></span></code></pre></div><p>At the end the <code>calculate_tissue_area</code> function returns the tissue area in pixels, the binary mask, and the RGB image with tissue highlighted.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span> area_pixels, mask, filled_tissue
+</span></span></code></pre></div><p>Example output: a binary image showing the background in black and the total tissue area in white.</p>
+ <p align="center">
+   <img src="/images/Area.png" alt="Binary image showing tissue as white and background as black" width="400">
+ </p>
+<p>The next function, <code>process_folder</code>, processes all image files in a given folder and applies the <code>calculate_tissue_area</code> function to each of them. The results are saved to a CSV file.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">def</span> <span style="color:#a6e22e">process_folder</span>(input_folder, output_folder, file_extensions<span style="color:#f92672">=</span><span style="color:#66d9ef">None</span>):
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> file_extensions <span style="color:#f92672">is</span> <span style="color:#66d9ef">None</span>:
+</span></span><span style="display:flex;"><span>      file_extensions <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;.jpg&#39;</span>, <span style="color:#e6db74">&#39;.jpeg&#39;</span>, <span style="color:#e6db74">&#39;.png&#39;</span>, <span style="color:#e6db74">&#39;.tif&#39;</span>, <span style="color:#e6db74">&#39;.tiff&#39;</span>]
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  os<span style="color:#f92672">.</span>makedirs(output_folder, exist_ok<span style="color:#f92672">=</span><span style="color:#66d9ef">True</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  image_files <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">for</span> ext <span style="color:#f92672">in</span> file_extensions:
+</span></span><span style="display:flex;"><span>      image_files<span style="color:#f92672">.</span>extend(glob<span style="color:#f92672">.</span>glob(os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>join(input_folder, <span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;*</span><span style="color:#e6db74">{</span>ext<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;</span>)))
+</span></span><span style="display:flex;"><span>      image_files<span style="color:#f92672">.</span>extend(glob<span style="color:#f92672">.</span>glob(os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>join(input_folder, <span style="color:#e6db74">f</span><span style="color:#e6db74">&#39;*</span><span style="color:#e6db74">{</span>ext<span style="color:#f92672">.</span>upper()<span style="color:#e6db74">}</span><span style="color:#e6db74">&#39;</span>)))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> <span style="color:#f92672">not</span> image_files:
+</span></span><span style="display:flex;"><span>      print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;No image files found in </span><span style="color:#e6db74">{</span>input_folder<span style="color:#e6db74">}</span><span style="color:#e6db74"> with extensions </span><span style="color:#e6db74">{</span>file_extensions<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">None</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Found </span><span style="color:#e6db74">{</span>len(image_files)<span style="color:#e6db74">}</span><span style="color:#e6db74"> image files to process&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  results <span style="color:#f92672">=</span> []
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">for</span> img_path <span style="color:#f92672">in</span> tqdm(image_files, desc<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Processing slides&#34;</span>):
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">try</span>:
+</span></span><span style="display:flex;"><span>          filename <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>basename(img_path)
+</span></span><span style="display:flex;"><span>          area, mask, filled_tissue <span style="color:#f92672">=</span> calculate_tissue_area(img_path)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>          img <span style="color:#f92672">=</span> cv2<span style="color:#f92672">.</span>imread(img_path)
+</span></span><span style="display:flex;"><span>          base_name <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>splitext(filename)[<span style="color:#ae81ff">0</span>]
+</span></span><span style="display:flex;"><span>          cv2<span style="color:#f92672">.</span>imwrite(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{</span>output_folder<span style="color:#e6db74">}</span><span style="color:#e6db74">/</span><span style="color:#e6db74">{</span>base_name<span style="color:#e6db74">}</span><span style="color:#e6db74">_original.png&#34;</span>, img)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>          <span style="color:#66d9ef">if</span> mask <span style="color:#f92672">is</span> <span style="color:#f92672">not</span> <span style="color:#66d9ef">None</span>:
+</span></span><span style="display:flex;"><span>              cv2<span style="color:#f92672">.</span>imwrite(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">{</span>output_folder<span style="color:#e6db74">}</span><span style="color:#e6db74">/</span><span style="color:#e6db74">{</span>base_name<span style="color:#e6db74">}</span><span style="color:#e6db74">_mask.png&#34;</span>, mask)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>          results<span style="color:#f92672">.</span>append({
+</span></span><span style="display:flex;"><span>              <span style="color:#e6db74">&#39;Image&#39;</span>: filename,
+</span></span><span style="display:flex;"><span>              <span style="color:#e6db74">&#39;Tissue Area (pixels)&#39;</span>: area
+</span></span><span style="display:flex;"><span>          })
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">except</span> <span style="color:#a6e22e">Exception</span> <span style="color:#66d9ef">as</span> e:
+</span></span><span style="display:flex;"><span>          print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Error processing </span><span style="color:#e6db74">{</span>img_path<span style="color:#e6db74">}</span><span style="color:#e6db74">: </span><span style="color:#e6db74">{</span>e<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> results:
+</span></span><span style="display:flex;"><span>      df <span style="color:#f92672">=</span> pd<span style="color:#f92672">.</span>DataFrame(results)
+</span></span><span style="display:flex;"><span>      csv_path <span style="color:#f92672">=</span> os<span style="color:#f92672">.</span>path<span style="color:#f92672">.</span>join(output_folder, <span style="color:#e6db74">&#34;tissue_areas.csv&#34;</span>)
+</span></span><span style="display:flex;"><span>      df<span style="color:#f92672">.</span>to_csv(csv_path, index<span style="color:#f92672">=</span><span style="color:#66d9ef">False</span>)
+</span></span><span style="display:flex;"><span>      print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Results saved to </span><span style="color:#e6db74">{</span>csv_path<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">return</span> df
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>      print(<span style="color:#e6db74">&#34;No results were generated&#34;</span>)
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">None</span>   
+</span></span></code></pre></div><p>The final section of this script is the main execution block. It defines the folders to use, calls the processing function and checks whether results were produced by printing a confirmation or warning message accordingly.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#66d9ef">if</span> __name__ <span style="color:#f92672">==</span> <span style="color:#e6db74">&#34;__main__&#34;</span>:
+</span></span><span style="display:flex;"><span>  input_folder <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Input&#39;</span>
+</span></span><span style="display:flex;"><span>  output_folder <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;Output&#39;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Processing slides from </span><span style="color:#e6db74">{</span>input_folder<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>  print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;Results will be saved to </span><span style="color:#e6db74">{</span>output_folder<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  df <span style="color:#f92672">=</span> process_folder(input_folder, output_folder)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">if</span> df <span style="color:#f92672">is</span> <span style="color:#f92672">not</span> <span style="color:#66d9ef">None</span>:
+</span></span><span style="display:flex;"><span>      print(<span style="color:#e6db74">&#34;Processing complete!&#34;</span>)
+</span></span><span style="display:flex;"><span>      print(<span style="color:#e6db74">f</span><span style="color:#e6db74">&#34;CSV file with area measurements saved to </span><span style="color:#e6db74">{</span>output_folder<span style="color:#e6db74">}</span><span style="color:#e6db74">/tissue_areas.csv&#34;</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">else</span>:
+</span></span><span style="display:flex;"><span>      print(<span style="color:#e6db74">&#34;No results were generated.&#34;</span>)
+</span></span></code></pre></div><p>Now that you have calculated the area of each tissue section in pixels, you can proceed in performing your desired statistical analyses normalizing on tissue area.</p>
+</li>
+</ul>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+    <aside class="book-toc">
+      <div class="book-toc-content">
+        
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#31-normalization">3.1 Normalization</a></li>
+  </ul>
+</nav>
+
+
+ 
+      </div>
+    </aside>
+    
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

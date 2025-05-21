@@ -1,19 +1,47 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>About Us on Spatial Vessel Analysis</title>
+    <title>Step-by-Step Guide on Home</title>
     <link>https://spatialvesselanalysis.github.io/projects/</link>
-    <description>Recent content in About Us on Spatial Vessel Analysis</description>
+    <description>Recent content in Step-by-Step Guide on Home</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Tue, 20 May 2025 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 21 May 2025 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://spatialvesselanalysis.github.io/projects/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Artifact correction</title>
+      <title>Data Preparation</title>
       <link>https://spatialvesselanalysis.github.io/projects/first-project/</link>
-      <pubDate>Tue, 20 May 2025 00:00:00 +0000</pubDate>
+      <pubDate>Wed, 21 May 2025 00:00:00 +0000</pubDate>
       <guid>https://spatialvesselanalysis.github.io/projects/first-project/</guid>
-      <description>&lt;p&gt;Page to show how to correct image artifacts.&lt;/p&gt;</description>
+      <description>&lt;h1 id=&#34;1-prepare-your-data&#34;&gt;&#xA;  1. Prepare Your Data&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#1-prepare-your-data&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h1&gt;&#xA;&lt;p&gt;Before diving into analysis, you need to prepare your images. Here’s what you need to get your data ready for processing:&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&#xA;&lt;h2 id=&#34;11-stain-the-histological-images-of-interest-for-cd31&#34;&gt;&#xA;  1.1 Stain the histological images of interest for CD31&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#11-stain-the-histological-images-of-interest-for-cd31&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h2&gt;&#xA;&lt;p&gt;The first step is to obtain the histological images of interest. These images must include a stain that highlights blood vessels. Common choices are CD31 or CD34, both of which label the endothelial cells lining the vasculature. CD31 is particularly useful due to its strong and specific endothelial staining, while CD34 provides additional coverage of endothelial and progenitor cells. These stains are essential for enhancing vessel contrast and enabling analyses further down the pipeline. Finally, the slides need to be scanned digitally for further evaluation.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Vessel Segmentation</title>
+      <link>https://spatialvesselanalysis.github.io/projects/second-project/</link>
+      <pubDate>Wed, 21 May 2025 00:00:00 +0000</pubDate>
+      <guid>https://spatialvesselanalysis.github.io/projects/second-project/</guid>
+      <description>&lt;h1 id=&#34;2-segment-vessels-and-extract-features-in-python&#34;&gt;&#xA;  2. Segment Vessels and Extract Features in Python&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#2-segment-vessels-and-extract-features-in-python&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h1&gt;&#xA;&lt;p&gt;This is where the true transformation — or as some may say, magic — happens. With the images at hand, you can perform vessel segmentation and feature extraction using Python. Simply run the &lt;code&gt;Segmentation.py&lt;/code&gt; (script downloadable from the user slrenne&amp;rsquo;s erivessel repository) script as follows.&lt;/p&gt;&#xA;&lt;p&gt;In the prelinimary setup, upload necessary libraries.&lt;/p&gt;&#xA;&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#75715e&#34;&gt;#python&lt;/span&gt;&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; cv2&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; numpy &lt;span style=&#34;color:#66d9ef&#34;&gt;as&lt;/span&gt; np&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; matplotlib.pyplot &lt;span style=&#34;color:#66d9ef&#34;&gt;as&lt;/span&gt; plt&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; skimage.measure &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; label, regionprops&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; skimage &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; measure&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; pandas &lt;span style=&#34;color:#66d9ef&#34;&gt;as&lt;/span&gt; pd&#xA;&lt;/span&gt;&lt;/span&gt;&lt;span style=&#34;display:flex;&#34;&gt;&lt;span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; os&#xA;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Next, define the path that sets the directory where the images are stored and create a list of subdirectories (folders) within the specified path.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Statistics</title>
+      <link>https://spatialvesselanalysis.github.io/projects/third-project/</link>
+      <pubDate>Wed, 21 May 2025 00:00:00 +0000</pubDate>
+      <guid>https://spatialvesselanalysis.github.io/projects/third-project/</guid>
+      <description>&lt;h1 id=&#34;3-statistical-analyses&#34;&gt;&#xA;  3. Statistical Analyses&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#3-statistical-analyses&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h1&gt;&#xA;&lt;p&gt;Now that you have quantitative data on your vessels, you can perform statistics to investigate what those numbers mean.&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&#xA;&lt;h2 id=&#34;31-normalization&#34;&gt;&#xA;  3.1 Normalization&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#31-normalization&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h2&gt;&#xA;&lt;p&gt;Before you can apply statistical analyses, it is necessary to normalize your data. The code &lt;code&gt;Area_slide.py&lt;/code&gt; (script downloadable from the user slrenne&amp;rsquo;s erivessel repository) allows you to normalize the number of vessels on the tissue sample area. The function of this code is to segment the entire sample area through the L channel, also known as the luminance channel.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Drug Distribution</title>
+      <link>https://spatialvesselanalysis.github.io/projects/fourth-project/</link>
+      <pubDate>Wed, 21 May 2025 00:00:00 +0000</pubDate>
+      <guid>https://spatialvesselanalysis.github.io/projects/fourth-project/</guid>
+      <description>&lt;h1 id=&#34;4-infer-drug-distributions&#34;&gt;&#xA;  4. Infer Drug Distributions&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#4-infer-drug-distributions&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h1&gt;&#xA;&lt;p&gt;Let&amp;rsquo;s now explore a path illuminated by our newfound understanding of vascular network morphology, enhanced by the power of Gaussian Process (GP) Modelling, to uncover the biological relevance of vessel arrangement. As you know, any drug reaches it&amp;rsquo;s target through vessels, but how exactly do vessel morphology and distribution impact the diffusion of compounds from the vessels into surrounding tissues? To answer, we must correlate the vascular network extracted from histological images with MALDI imaging data through GP modelling. Your aim is to model the spatial distribution of a drug within a tissue sample based on MALDI imaging, where pixel intensity is directly proportional to drug concentration. However, before applying GP modelling to real images, we must validate the model’s accuracy through simulations.&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>Interpretation</title>
+      <link>https://spatialvesselanalysis.github.io/projects/fith-projct/</link>
+      <pubDate>Tue, 20 May 2025 00:00:00 +0000</pubDate>
+      <guid>https://spatialvesselanalysis.github.io/projects/fith-projct/</guid>
+      <description>&lt;h1 id=&#34;5-interpret-your-data&#34;&gt;&#xA;  5. Interpret Your Data&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#5-interpret-your-data&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h1&gt;&#xA;&lt;p&gt;Finally, you have arrived at the last step. This is where the numbers should start to talk, where images should transform into knowledge, and where you should ask yourself, &lt;strong&gt;“So what?”&lt;/strong&gt;, what do these findings mean for your future research? And just like that, you’ve made sense of it all, you&amp;rsquo;ve taken a raw histological image and extracted meaningful biological insights. So, go forth and analyze, because in the world of vessel analysis, the smallest capillary could hold the biggest discovery.&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>

@@ -1,6 +1,6 @@
 {
-  "name": "Spatial Vessel Analysis",
-  "short_name": "Spatial Vessel Analysis",
+  "name": "Home",
+  "short_name": "Home",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

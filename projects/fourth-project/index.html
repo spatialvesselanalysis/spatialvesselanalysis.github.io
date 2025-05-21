@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en-us" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="
+  4. Infer Drug Distributions
+  #
+
+Let&rsquo;s now explore a path illuminated by our newfound understanding of vascular network morphology, enhanced by the power of Gaussian Process (GP) Modelling, to uncover the biological relevance of vessel arrangement. As you know, any drug reaches it&rsquo;s target through vessels, but how exactly do vessel morphology and distribution impact the diffusion of compounds from the vessels into surrounding tissues? To answer, we must correlate the vascular network extracted from histological images with MALDI imaging data through GP modelling. Your aim is to model the spatial distribution of a drug within a tissue sample based on MALDI imaging, where pixel intensity is directly proportional to drug concentration. However, before applying GP modelling to real images, we must validate the model’s accuracy through simulations.">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="https://spatialvesselanalysis.github.io/projects/fourth-project/">
+  <meta property="og:site_name" content="Home">
+  <meta property="og:title" content="Drug Distribution">
+  <meta property="og:description" content="4. Infer Drug Distributions # Let’s now explore a path illuminated by our newfound understanding of vascular network morphology, enhanced by the power of Gaussian Process (GP) Modelling, to uncover the biological relevance of vessel arrangement. As you know, any drug reaches it’s target through vessels, but how exactly do vessel morphology and distribution impact the diffusion of compounds from the vessels into surrounding tissues? To answer, we must correlate the vascular network extracted from histological images with MALDI imaging data through GP modelling. Your aim is to model the spatial distribution of a drug within a tissue sample based on MALDI imaging, where pixel intensity is directly proportional to drug concentration. However, before applying GP modelling to real images, we must validate the model’s accuracy through simulations.">
+  <meta property="og:locale" content="en_us">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="projects">
+    <meta property="article:published_time" content="2025-05-21T00:00:00+00:00">
+    <meta property="article:modified_time" content="2025-05-21T00:00:00+00:00">
+<title>Drug Distribution | Home</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="https://spatialvesselanalysis.github.io/projects/fourth-project/">
+<link rel="stylesheet" href="/book.min.a7616cf2799b58bddffce9438e31fdbfc6393687cfc0950a4a17cd1cce7e35f6.css" integrity="sha256-p2Fs8nmbWL3f/OlDjjH9v8Y5NofPwJUKShfNHM5&#43;NfY=" crossorigin="anonymous"><!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.css" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.4/dist/contrib/auto-render.min.js" crossorigin="anonymous"
+    onload="renderMathInElement(document.body, {
+      delimiters: [
+        {left: '$$', right: '$$', display: true},
+        {left: '\\(', right: '\\)', display: false},
+        {left: '$', right: '$', display: false}
+      ]
+    });">
+  </script>
+
+
+
+<link rel="stylesheet" href="/book.min.css">
+<script defer src="/en.search.min.2b6333591953211fc501497937cbcdc6fcf29ad8ccca8f8e9dfa3e18bbb5848a.js"></script>
+</head>
+<body dir="ltr">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    <aside class="book-menu">
+      <div class="book-menu-content">
+        
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>Home</span>
+  </a>
+</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/projects/" class="">Step-by-Step Guide</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/projects/first-project/" class="">Data Preparation</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/projects/second-project/" class="">Vessel Segmentation</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/projects/third-project/" class="">Statistics</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/projects/fourth-project/" class="active">Drug Distribution</a>
+  
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/projects/fith-projct/" class="">Interpretation</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/about/" class="">About Us</a>
+  
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+ 
+      </div>
+    </aside>
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>Drug Distribution</h3>
+
+  <label for="toc-control">
+    
+    <img src="/svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#41-generating-synthetic-vessel-images">4.1 Generating synthetic vessel images</a></li>
+    <li><a href="#42-creating-simulated-maldi-images">4.2 Creating Simulated MALDI Images</a></li>
+    <li><a href="#43-inferring-drug-distribution-with-gp-regression">4.3 Inferring drug distribution with GP regression</a></li>
+    <li><a href="#44-validating-the-model">4.4 Validating the Model</a></li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown book-article"><h1 id="4-infer-drug-distributions">
+  4. Infer Drug Distributions
+  <a class="anchor" href="#4-infer-drug-distributions">#</a>
+</h1>
+<p>Let&rsquo;s now explore a path illuminated by our newfound understanding of vascular network morphology, enhanced by the power of Gaussian Process (GP) Modelling, to uncover the biological relevance of vessel arrangement. As you know, any drug reaches it&rsquo;s target through vessels, but how exactly do vessel morphology and distribution impact the diffusion of compounds from the vessels into surrounding tissues? To answer, we must correlate the vascular network extracted from histological images with MALDI imaging data through GP modelling. Your aim is to model the spatial distribution of a drug within a tissue sample based on MALDI imaging, where pixel intensity is directly proportional to drug concentration. However, before applying GP modelling to real images, we must validate the model’s accuracy through simulations.</p>
+<blockquote>
+<p><strong>Theoretical Background</strong>: A <strong>Gaussian Process</strong> (GP) is a collection of random variables, where any finite subset follows a multivariate normal distribution. This statistical method offers a probabilistic framework for modelling spatial dependencies. It is widely used in spatial statistics and machine learning to infer continuous functions from discrete data points. In this context, GP modelling allows us to estimate the underlying drug distribution function based on observed MALDI intensities.</p></blockquote>
+<ul>
+<li>
+<h2 id="41-generating-synthetic-vessel-images">
+  4.1 Generating synthetic vessel images
+  <a class="anchor" href="#41-generating-synthetic-vessel-images">#</a>
+</h2>
+<p>To begin, execute <code>Final_optimized_4_Windows.R</code> (script downloadable from the user slrenne&rsquo;s erivessel repository). Note that this code only works on windows operating systems.</p>
+<p>As usual, set up your environment. Notably, set a fixed seed for random number generation and import the <code>Statistical Rethinking</code> package (detailed intructions for installation may be found on <a href="https://github.com/rmcelreath/rethinking">Richard McElreath&rsquo;s rethinking repository</a>). We also create a parallel cluster to speed things up.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#75715e">#r</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">set.seed</span>(<span style="color:#ae81ff">20241028</span>)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(rethinking)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(parallel)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(plot.matrix)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(viridis)
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">library</span>(MASS)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>num_cores <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">detectCores</span>() <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>cl <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">makeCluster</span>(num_cores)
+</span></span></code></pre></div><p>We start by simulating binary vessel masks as square matrices, where pixels with value <code>1</code> represent vessel regions and <code>0</code> represent any non-vascular tissue.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#75715e">#r</span>
+</span></span><span style="display:flex;"><span>test_function <span style="color:#f92672">&lt;-</span> <span style="color:#66d9ef">function</span>(n, circles) {
+</span></span><span style="display:flex;"><span>  mat <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">matrix</span>(<span style="color:#ae81ff">0</span>, nrow <span style="color:#f92672">=</span> n, ncol <span style="color:#f92672">=</span> n)
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">for</span>(i <span style="color:#66d9ef">in</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">:</span>n) {
+</span></span><span style="display:flex;"><span>    <span style="color:#66d9ef">for</span>(j <span style="color:#66d9ef">in</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">:</span>n) {
+</span></span><span style="display:flex;"><span>      <span style="color:#66d9ef">for</span>(circle <span style="color:#66d9ef">in</span> circles) {
+</span></span><span style="display:flex;"><span>        center <span style="color:#f92672">&lt;-</span> circle<span style="color:#f92672">$</span>center
+</span></span><span style="display:flex;"><span>        radius <span style="color:#f92672">&lt;-</span> circle<span style="color:#f92672">$</span>radius
+</span></span><span style="display:flex;"><span>        <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">sqrt</span>((i <span style="color:#f92672">-</span> center[1])^2 <span style="color:#f92672">+</span> (j <span style="color:#f92672">-</span> center[2])^2) <span style="color:#f92672">&lt;=</span> radius) {
+</span></span><span style="display:flex;"><span>          mat[i, j] <span style="color:#f92672">&lt;-</span> <span style="color:#ae81ff">1</span>
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>      }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>  }
+</span></span><span style="display:flex;"><span>  <span style="color:#66d9ef">return</span>(mat)
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Here, you may manually set the number of images and matrix size to obtain your desired trade-off between accuraccuracy and computational cost. In this case we are generating <code>10</code> masks each having a <code>20x20</code> grid with circular vessel regions. The vessel positions and radii are randomly sampled to introduce variability.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#75715e">#r</span>
+</span></span><span style="display:flex;"><span>N_img <span style="color:#f92672">&lt;-</span> <span style="color:#ae81ff">10</span>   <span style="color:#75715e"># Number of synthetic images</span>
+</span></span><span style="display:flex;"><span>n <span style="color:#f92672">&lt;-</span> <span style="color:#ae81ff">20</span>       <span style="color:#75715e"># Matrix dimensions</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>circles_list <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">vector</span>(<span style="color:#e6db74">&#34;list&#34;</span>, N_img)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span>(i <span style="color:#66d9ef">in</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">:</span>N_img) {
+</span></span><span style="display:flex;"><span>  circles_list[[i]] <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">list</span>(
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">list</span>(center <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#a6e22e">sample</span>(<span style="color:#ae81ff">5</span><span style="color:#f92672">:</span><span style="color:#ae81ff">15</span>, <span style="color:#ae81ff">1</span>), <span style="color:#a6e22e">sample</span>(<span style="color:#ae81ff">5</span><span style="color:#f92672">:</span><span style="color:#ae81ff">15</span>, <span style="color:#ae81ff">1</span>)), radius <span style="color:#f92672">=</span> <span style="color:#a6e22e">runif</span>(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">3</span>)),
+</span></span><span style="display:flex;"><span>    <span style="color:#a6e22e">list</span>(center <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#a6e22e">sample</span>(<span style="color:#ae81ff">5</span><span style="color:#f92672">:</span><span style="color:#ae81ff">15</span>, <span style="color:#ae81ff">1</span>), <span style="color:#a6e22e">sample</span>(<span style="color:#ae81ff">5</span><span style="color:#f92672">:</span><span style="color:#ae81ff">15</span>, <span style="color:#ae81ff">1</span>)), radius <span style="color:#f92672">=</span> <span style="color:#a6e22e">runif</span>(<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">3</span>))
+</span></span><span style="display:flex;"><span>  )
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>We generate vessel masks in parallel using the defined <code>test_function()</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#75715e">#r</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">clusterExport</span>(cl, <span style="color:#a6e22e">c</span>(<span style="color:#e6db74">&#34;test_function&#34;</span>, <span style="color:#e6db74">&#34;n&#34;</span>, <span style="color:#e6db74">&#34;circles_list&#34;</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>mats <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">parLapply</span>(cl, <span style="color:#ae81ff">1</span><span style="color:#f92672">:</span>N_img, <span style="color:#66d9ef">function</span>(i) <span style="color:#a6e22e">test_function</span>(n, circles_list[[i]]))
+</span></span></code></pre></div></li>
+<li>
+<h2 id="42-creating-simulated-maldi-images">
+  4.2 Creating Simulated MALDI Images
+  <a class="anchor" href="#42-creating-simulated-maldi-images">#</a>
+</h2>
+<p>Next, we generate simulated MALDI intensity maps based on any predefined function you like, such as an exponential decay model:</p>
+<p>$$
+I(x) = \eta^2 e^{- \frac{d(x)^2}{2\rho^2}}
+$$</p>
+<p>where we manually define the parameters:</p>
+<ul>
+<li>$d(x)$: the Euclidean distance from vessels</li>
+<li>$\eta^2$: the signal variance</li>
+<li>$\rho$: the characteristic length scale controlling spatial correlation</li>
+</ul>
+<p>First, compute Euclidean distance matrices for each image in parallel.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#75715e">#r</span>
+</span></span><span style="display:flex;"><span>grids <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">parLapply</span>(cl, <span style="color:#ae81ff">1</span><span style="color:#f92672">:</span>N_img, <span style="color:#66d9ef">function</span>(i) <span style="color:#a6e22e">expand.grid</span>(X <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">:</span>n, Y <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">:</span>n))
+</span></span><span style="display:flex;"><span>Dmats <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">parLapply</span>(cl, <span style="color:#ae81ff">1</span><span style="color:#f92672">:</span>N_img, <span style="color:#66d9ef">function</span>(i) <span style="color:#a6e22e">as.matrix</span>(<span style="color:#a6e22e">dist</span>(grids[[i]], method <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;euclidean&#34;</span>)))
+</span></span></code></pre></div><p>Then, as previously mentioned, define the the kernel function parameters.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#75715e">#r</span>
+</span></span><span style="display:flex;"><span>beta <span style="color:#f92672">&lt;-</span> <span style="color:#ae81ff">5</span>
+</span></span><span style="display:flex;"><span>etasq <span style="color:#f92672">&lt;-</span> <span style="color:#ae81ff">2</span>
+</span></span><span style="display:flex;"><span>rho <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">sqrt</span>(<span style="color:#ae81ff">0.5</span>)
+</span></span></code></pre></div><p>Compute covariance matrices using the radial basis function (RBF) kernel.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#75715e">#r</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">clusterExport</span>(cl, <span style="color:#a6e22e">c</span>(<span style="color:#e6db74">&#34;beta&#34;</span>, <span style="color:#e6db74">&#34;etasq&#34;</span>, <span style="color:#e6db74">&#34;rho&#34;</span>, <span style="color:#e6db74">&#34;Dmats&#34;</span>))
+</span></span><span style="display:flex;"><span>Ks <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">parLapply</span>(cl, <span style="color:#ae81ff">1</span><span style="color:#f92672">:</span>N_img, <span style="color:#66d9ef">function</span>(i) {
+</span></span><span style="display:flex;"><span>  etasq <span style="color:#f92672">*</span> <span style="color:#a6e22e">exp</span>(<span style="color:#ae81ff">-0.5</span> <span style="color:#f92672">*</span> ((Dmats[[i]] <span style="color:#f92672">/</span> rho)^2)) <span style="color:#f92672">+</span> <span style="color:#a6e22e">diag</span>(<span style="color:#ae81ff">1e-9</span>, n<span style="color:#f92672">*</span>n)
+</span></span><span style="display:flex;"><span>})
+</span></span></code></pre></div><p>Now, sample synthetic MALDI intensities using a GP prior.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#75715e">#r</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">clusterExport</span>(cl, <span style="color:#e6db74">&#34;Ks&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>sim_gp <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">parLapply</span>(cl, <span style="color:#ae81ff">1</span><span style="color:#f92672">:</span>N_img, <span style="color:#66d9ef">function</span>(i) {
+</span></span><span style="display:flex;"><span>  MASS<span style="color:#f92672">::</span><span style="color:#a6e22e">mvrnorm</span>(<span style="color:#ae81ff">1</span>, mu <span style="color:#f92672">=</span> <span style="color:#a6e22e">rep</span>(<span style="color:#ae81ff">0</span>, n<span style="color:#f92672">*</span>n), Sigma <span style="color:#f92672">=</span> Ks[[i]])
+</span></span><span style="display:flex;"><span>})
+</span></span></code></pre></div><p>Generate observed intensity values by adding noise.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#75715e">#r</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">clusterExport</span>(cl, <span style="color:#a6e22e">c</span>(<span style="color:#e6db74">&#34;sim_gp&#34;</span>))
+</span></span><span style="display:flex;"><span>sim_y <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">parLapply</span>(cl, <span style="color:#ae81ff">1</span><span style="color:#f92672">:</span>N_img, <span style="color:#66d9ef">function</span>(i) {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">rnorm</span>(n<span style="color:#f92672">*</span>n, mean <span style="color:#f92672">=</span> sim_gp[[i]] <span style="color:#f92672">+</span> beta <span style="color:#f92672">*</span> <span style="color:#a6e22e">as.vector</span>(<span style="color:#a6e22e">t</span>(mats[[i]])), sd <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>)
+</span></span><span style="display:flex;"><span>})
+</span></span></code></pre></div></li>
+<li>
+<h2 id="43-inferring-drug-distribution-with-gp-regression">
+  4.3 Inferring drug distribution with GP regression
+  <a class="anchor" href="#43-inferring-drug-distribution-with-gp-regression">#</a>
+</h2>
+<p>Now that we have simulated data, we fit a Gaussian Process model using <strong>Bayesian inference</strong> with <strong>Stan (rethinking package)</strong>.</p>
+<p>First, prepare data for the Bayesian model.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#75715e">#r</span>
+</span></span><span style="display:flex;"><span>dat_list <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">list</span>(N <span style="color:#f92672">=</span> n<span style="color:#f92672">*</span>n)
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span>(i <span style="color:#66d9ef">in</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">:</span>N_img) {
+</span></span><span style="display:flex;"><span>  dat_list[[ <span style="color:#a6e22e">paste0</span>(<span style="color:#e6db74">&#34;y&#34;</span>, i) ]] <span style="color:#f92672">&lt;-</span> sim_y[[i]]
+</span></span><span style="display:flex;"><span>  dat_list[[ <span style="color:#a6e22e">paste0</span>(<span style="color:#e6db74">&#34;x&#34;</span>, i) ]] <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">as.vector</span>(<span style="color:#a6e22e">t</span>(mats[[i]]))
+</span></span><span style="display:flex;"><span>  dat_list[[ <span style="color:#a6e22e">paste0</span>(<span style="color:#e6db74">&#34;Dmat&#34;</span>, i) ]] <span style="color:#f92672">&lt;-</span> Dmats[[i]]
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></div><p>Next, define the GP model.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#75715e">#r</span>
+</span></span><span style="display:flex;"><span>model_code <span style="color:#f92672">&lt;-</span> <span style="color:#e6db74">&#34;alist(\n&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span>(i <span style="color:#66d9ef">in</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">:</span>N_img) {
+</span></span><span style="display:flex;"><span>  model_code <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">paste0</span>(model_code,
+</span></span><span style="display:flex;"><span>                       <span style="color:#e6db74">&#34;  y&#34;</span>, i, <span style="color:#e6db74">&#34; ~ multi_normal(mu&#34;</span>, i, <span style="color:#e6db74">&#34;, K&#34;</span>, i, <span style="color:#e6db74">&#34;),\n&#34;</span>,
+</span></span><span style="display:flex;"><span>                       <span style="color:#e6db74">&#34;  mu&#34;</span>, i, <span style="color:#e6db74">&#34; &lt;- a + b * x&#34;</span>, i, <span style="color:#e6db74">&#34;,\n&#34;</span>,
+</span></span><span style="display:flex;"><span>                       <span style="color:#e6db74">&#34;  matrix[N, N]:K&#34;</span>, i, <span style="color:#e6db74">&#34; &lt;- etasq * exp(-0.5 * square(Dmat&#34;</span>, i, <span style="color:#e6db74">&#34; / rho)) + diag_matrix(rep_vector(0.01, N)),\n&#34;</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span>model_code <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">paste0</span>(model_code,
+</span></span><span style="display:flex;"><span>                     <span style="color:#e6db74">&#34;  a ~ normal(0, 1),\n&#34;</span>,
+</span></span><span style="display:flex;"><span>                     <span style="color:#e6db74">&#34;  b ~ normal(0, 0.5),\n&#34;</span>,
+</span></span><span style="display:flex;"><span>                     <span style="color:#e6db74">&#34;  etasq ~ exponential(2),\n&#34;</span>,
+</span></span><span style="display:flex;"><span>                     <span style="color:#e6db74">&#34;  rho ~ exponential(0.5)\n&#34;</span>,
+</span></span><span style="display:flex;"><span>                     <span style="color:#e6db74">&#34;)&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>model_list <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">eval</span>(<span style="color:#a6e22e">parse</span>(text <span style="color:#f92672">=</span> model_code))
+</span></span></code></pre></div><p>Fit the GP model using Hamiltonian Monte Carlo (HMC) via the <code>ulam</code> function from the rethinking package. This approach enables Bayesian inference on vessel spatial organization and drug distribution. Feel free to play around with the following parameters according to your computational resources.</p>
+<ul>
+<li><code>chains</code> sets how many independent MCMC chains are run to ensure proper convergence.</li>
+<li><code>cores</code> sets how many CPU cores are used to parallelize computation and speed up sampling.</li>
+<li><code>iter</code> sets how manu iterations are run per chain, including warm-up.</li>
+<li><code>warmup</code> sets how many iterations are used for warm-up (not included in posterior estimates).</li>
+</ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#75715e">#r</span>
+</span></span><span style="display:flex;"><span>GP_N <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">ulam</span>(model_list, data <span style="color:#f92672">=</span> dat_list, chains <span style="color:#f92672">=</span> <span style="color:#ae81ff">4</span>, cores <span style="color:#f92672">=</span> num_cores, iter <span style="color:#f92672">=</span> <span style="color:#ae81ff">600</span>, warmup <span style="color:#f92672">=</span> <span style="color:#ae81ff">150</span>)
+</span></span></code></pre></div><p>Finally, print the model summary.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#75715e">#r</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">print</span>(<span style="color:#a6e22e">precis</span>(GP_N))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>post <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">extract.samples</span>(GP_N)
+</span></span></code></pre></div></li>
+<li>
+<h2 id="44-validating-the-model">
+  4.4 Validating the Model
+  <a class="anchor" href="#44-validating-the-model">#</a>
+</h2>
+<p>We visualize the inferred vs. true covariance functions by plotting the priors, the actual kernel and the estimated kernels (your posterior samples). Also, remember to stop the cluster to free resources.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-r" data-lang="r"><span style="display:flex;"><span><span style="color:#75715e">#r</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">set.seed</span>(<span style="color:#ae81ff">08062002</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>p.etasq <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">rexp</span>(n, rate <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.5</span>)
+</span></span><span style="display:flex;"><span>p.rhosq <span style="color:#f92672">&lt;-</span> <span style="color:#a6e22e">rexp</span>(n, rate <span style="color:#f92672">=</span> <span style="color:#ae81ff">0.5</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">plot</span>(<span style="color:#66d9ef">NULL</span>, xlim <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">0</span>, <span style="color:#a6e22e">max</span>(Dmats[[1]])<span style="color:#f92672">/</span><span style="color:#ae81ff">3</span>), ylim <span style="color:#f92672">=</span> <span style="color:#a6e22e">c</span>(<span style="color:#ae81ff">0</span>, <span style="color:#ae81ff">10</span>),
+</span></span><span style="display:flex;"><span>     xlab <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;pixel distance&#34;</span>, ylab <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;covariance&#34;</span>,
+</span></span><span style="display:flex;"><span>     main <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;Prior, Actual, and Estimated Kernel&#34;</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Priors</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span>(i <span style="color:#66d9ef">in</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">:</span><span style="color:#ae81ff">20</span>)
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">curve</span>(p.etasq[i] <span style="color:#f92672">*</span> <span style="color:#a6e22e">exp</span>(<span style="color:#ae81ff">-0.5</span> <span style="color:#f92672">*</span> (x<span style="color:#f92672">/</span>p.rhosq[i])^2),
+</span></span><span style="display:flex;"><span>        add <span style="color:#f92672">=</span> <span style="color:#66d9ef">TRUE</span>, lwd <span style="color:#f92672">=</span> <span style="color:#ae81ff">6</span>, col <span style="color:#f92672">=</span> <span style="color:#a6e22e">col.alpha</span>(<span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">0.5</span>))
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Actual kernel</span>
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">curve</span>(etasq <span style="color:#f92672">*</span> <span style="color:#a6e22e">exp</span>(<span style="color:#ae81ff">-0.5</span> <span style="color:#f92672">*</span> (x<span style="color:#f92672">/</span>rho)^2), add <span style="color:#f92672">=</span> <span style="color:#66d9ef">TRUE</span>, lwd <span style="color:#f92672">=</span> <span style="color:#ae81ff">4</span>)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#75715e"># Estimated kernels</span>
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">for</span>(i <span style="color:#66d9ef">in</span> <span style="color:#ae81ff">1</span><span style="color:#f92672">:</span><span style="color:#ae81ff">20</span>) {
+</span></span><span style="display:flex;"><span>  <span style="color:#a6e22e">curve</span>(post<span style="color:#f92672">$</span>etasq[i] <span style="color:#f92672">*</span> <span style="color:#a6e22e">exp</span>(<span style="color:#ae81ff">-0.5</span> <span style="color:#f92672">*</span> (x<span style="color:#f92672">/</span>post<span style="color:#f92672">$</span>rho[i])^2),
+</span></span><span style="display:flex;"><span>        add <span style="color:#f92672">=</span> <span style="color:#66d9ef">TRUE</span>, col <span style="color:#f92672">=</span> <span style="color:#a6e22e">col.alpha</span>(<span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">0.3</span>), lwd <span style="color:#f92672">=</span> <span style="color:#ae81ff">6</span>)
+</span></span><span style="display:flex;"><span>}
+</span></span><span style="display:flex;"><span><span style="color:#a6e22e">stopCluster</span>(cl)
+</span></span></code></pre></div><p>If the inferred decay function closely matches the predefined function, it means the GP model accurately recovers known distribution parameters. So, the model&rsquo;s acccuracy is validated and ready to be easily applied to real world histological and MALDI images!</p>
+</li>
+</ul>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+  <script>(function(){function e(e){const t=window.getSelection(),n=document.createRange();n.selectNodeContents(e),t.removeAllRanges(),t.addRange(n)}document.querySelectorAll("pre code").forEach(t=>{t.addEventListener("click",function(){if(window.getSelection().toString())return;e(t.parentElement),navigator.clipboard&&navigator.clipboard.writeText(t.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+    <aside class="book-toc">
+      <div class="book-toc-content">
+        
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#41-generating-synthetic-vessel-images">4.1 Generating synthetic vessel images</a></li>
+    <li><a href="#42-creating-simulated-maldi-images">4.2 Creating Simulated MALDI Images</a></li>
+    <li><a href="#43-inferring-drug-distribution-with-gp-regression">4.3 Inferring drug distribution with GP regression</a></li>
+    <li><a href="#44-validating-the-model">4.4 Validating the Model</a></li>
+  </ul>
+</nav>
+
+
+ 
+      </div>
+    </aside>
+    
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
