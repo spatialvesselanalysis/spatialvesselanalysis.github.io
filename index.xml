@@ -6,12 +6,12 @@
     <description>Recent content in Spatial Vessel Analysis on Home</description>
     <generator>Hugo</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 21 May 2025 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 22 May 2025 00:00:00 +0000</lastBuildDate>
     <atom:link href="https://spatialvesselanalysis.github.io/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Data Preparation</title>
       <link>https://spatialvesselanalysis.github.io/projects/first-project/</link>
-      <pubDate>Wed, 21 May 2025 00:00:00 +0000</pubDate>
+      <pubDate>Thu, 22 May 2025 00:00:00 +0000</pubDate>
       <guid>https://spatialvesselanalysis.github.io/projects/first-project/</guid>
       <description>&lt;h1 id=&#34;1-prepare-your-data&#34;&gt;&#xA;  1. Prepare Your Data&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#1-prepare-your-data&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h1&gt;&#xA;&lt;p&gt;Before diving into analysis, you need to prepare your images. Here’s what you need to get your data ready for processing:&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&#xA;&lt;h2 id=&#34;11-stain-the-histological-images-of-interest-for-cd31&#34;&gt;&#xA;  1.1 Stain the histological images of interest for CD31&#xA;  &lt;a class=&#34;anchor&#34; href=&#34;#11-stain-the-histological-images-of-interest-for-cd31&#34;&gt;#&lt;/a&gt;&#xA;&lt;/h2&gt;&#xA;&lt;p&gt;The first step is to obtain the histological images of interest. These images must include a stain that highlights blood vessels. Common choices are CD31 or CD34, both of which label the endothelial cells lining the vasculature. CD31 is particularly useful due to its strong and specific endothelial staining, while CD34 provides additional coverage of endothelial and progenitor cells. These stains are essential for enhancing vessel contrast and enabling analyses further down the pipeline. Finally, the slides need to be scanned digitally for further evaluation.&lt;/p&gt;</description>
     </item>
